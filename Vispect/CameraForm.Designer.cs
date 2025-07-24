@@ -28,47 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlMainview = new System.Windows.Forms.Panel();
-            this.picMainview = new System.Windows.Forms.PictureBox();
-            this.pnlMainview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picMainview)).BeginInit();
+            this.imageViewer = new Vispect.ImageViewCtrl();
             this.SuspendLayout();
             // 
-            // pnlMainview
+            // imageViewer
             // 
-            this.pnlMainview.Controls.Add(this.picMainview);
-            this.pnlMainview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMainview.Location = new System.Drawing.Point(0, 0);
-            this.pnlMainview.Name = "pnlMainview";
-            this.pnlMainview.Size = new System.Drawing.Size(800, 450);
-            this.pnlMainview.TabIndex = 0;
-            // 
-            // picMainview
-            // 
-            this.picMainview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picMainview.Location = new System.Drawing.Point(0, 0);
-            this.picMainview.Name = "picMainview";
-            this.picMainview.Size = new System.Drawing.Size(800, 450);
-            this.picMainview.TabIndex = 0;
-            this.picMainview.TabStop = false;
+            this.imageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageViewer.Location = new System.Drawing.Point(0, 0);
+            this.imageViewer.Name = "imageViewer";
+            this.imageViewer.Size = new System.Drawing.Size(800, 450);
+            this.imageViewer.TabIndex = 0;
             // 
             // CameraForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.pnlMainview);
+            this.Controls.Add(this.imageViewer);
             this.Name = "CameraForm";
             this.Text = "CameeraForm";
-            this.pnlMainview.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picMainview)).EndInit();
+            this.Resize += new System.EventHandler(this.CameraForm_Resize);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel pnlMainview;
-        private System.Windows.Forms.PictureBox picMainview;
+        private ImageViewCtrl imageViewer;
     }
 }

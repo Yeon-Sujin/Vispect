@@ -43,7 +43,7 @@
             this.mnuFile});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Size = new System.Drawing.Size(880, 33);
+            this.mnuMain.Size = new System.Drawing.Size(1178, 33);
             this.mnuMain.TabIndex = 0;
             this.mnuMain.Text = "menuStrip1";
             // 
@@ -59,20 +59,21 @@
             // mnuImageOpen
             // 
             this.mnuImageOpen.Name = "mnuImageOpen";
-            this.mnuImageOpen.Size = new System.Drawing.Size(270, 34);
+            this.mnuImageOpen.Size = new System.Drawing.Size(216, 34);
             this.mnuImageOpen.Text = "Image Open";
+            this.mnuImageOpen.Click += new System.EventHandler(this.mnuImageOpen_Click);
             // 
             // mnuImageSave
             // 
             this.mnuImageSave.Name = "mnuImageSave";
-            this.mnuImageSave.Size = new System.Drawing.Size(270, 34);
+            this.mnuImageSave.Size = new System.Drawing.Size(216, 34);
             this.mnuImageSave.Text = "Image Save";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(880, 583);
+            this.ClientSize = new System.Drawing.Size(1178, 737);
             this.Controls.Add(this.mnuMain);
             this.MainMenuStrip = this.mnuMain;
             this.Name = "MainForm";

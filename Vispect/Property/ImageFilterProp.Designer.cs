@@ -28,18 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.cbImageFilter = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // UserControl1
+            // cbImageFilter
+            // 
+            this.cbImageFilter.FormattingEnabled = true;
+            this.cbImageFilter.Location = new System.Drawing.Point(42, 58);
+            this.cbImageFilter.Name = "cbImageFilter";
+            this.cbImageFilter.Size = new System.Drawing.Size(177, 26);
+            this.cbImageFilter.TabIndex = 0;
+            // 
+            // ImageFilterProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "UserControl1";
-            this.Size = new System.Drawing.Size(158, 151);
+            this.Controls.Add(this.cbImageFilter);
+            this.Name = "ImageFilterProp";
+            this.Size = new System.Drawing.Size(319, 296);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.ComboBox cbImageFilter;
     }
 }
