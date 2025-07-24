@@ -28,18 +28,66 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.txtAIModelPath = new System.Windows.Forms.TextBox();
+            this.btnSelAIModel = new System.Windows.Forms.Button();
+            this.btnLoadModel = new System.Windows.Forms.Button();
+            this.btnInspAI = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // AIModule
+            // txtAIModelPath
+            // 
+            this.txtAIModelPath.Location = new System.Drawing.Point(31, 31);
+            this.txtAIModelPath.Name = "txtAIModelPath";
+            this.txtAIModelPath.Size = new System.Drawing.Size(315, 28);
+            this.txtAIModelPath.TabIndex = 0;
+            // 
+            // btnSelAIModel
+            // 
+            this.btnSelAIModel.Location = new System.Drawing.Point(217, 97);
+            this.btnSelAIModel.Name = "btnSelAIModel";
+            this.btnSelAIModel.Size = new System.Drawing.Size(129, 42);
+            this.btnSelAIModel.TabIndex = 1;
+            this.btnSelAIModel.Text = "AI모델 선택";
+            this.btnSelAIModel.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadModel
+            // 
+            this.btnLoadModel.Location = new System.Drawing.Point(217, 145);
+            this.btnLoadModel.Name = "btnLoadModel";
+            this.btnLoadModel.Size = new System.Drawing.Size(129, 42);
+            this.btnLoadModel.TabIndex = 2;
+            this.btnLoadModel.Text = "모델 로딩";
+            this.btnLoadModel.UseVisualStyleBackColor = true;
+            // 
+            // btnInspAI
+            // 
+            this.btnInspAI.Location = new System.Drawing.Point(217, 193);
+            this.btnInspAI.Name = "btnInspAI";
+            this.btnInspAI.Size = new System.Drawing.Size(129, 42);
+            this.btnInspAI.TabIndex = 3;
+            this.btnInspAI.Text = "AI 검사";
+            this.btnInspAI.UseVisualStyleBackColor = true;
+            // 
+            // AIModuleProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "AIModule";
-            this.Size = new System.Drawing.Size(283, 265);
+            this.Controls.Add(this.btnInspAI);
+            this.Controls.Add(this.btnLoadModel);
+            this.Controls.Add(this.btnSelAIModel);
+            this.Controls.Add(this.txtAIModelPath);
+            this.Name = "AIModuleProp";
+            this.Size = new System.Drawing.Size(380, 515);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox txtAIModelPath;
+        private System.Windows.Forms.Button btnSelAIModel;
+        private System.Windows.Forms.Button btnLoadModel;
+        private System.Windows.Forms.Button btnInspAI;
     }
 }
