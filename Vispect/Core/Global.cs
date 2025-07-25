@@ -6,7 +6,38 @@ using System.Threading.Tasks;
 
 namespace Vispect.Core
 {
-    internal class Global
+    public class Global : IDisposable
     {
+        private static readonly Lazy<Global> _instance = new Lazy<Global>(() => new Global());
+
+        public static Global Inst
+        {
+            get
+            {
+                return _instance.Value;
+            }
+        }
+
+        private InspStage _stage = new InspStage();
+
+        public InspStage InspStage
+        {
+            get { return _stage; }
+        }
+
+        public Global()
+        { 
+        
+        }
+
+        public void Initialize()
+        { 
+            _stage.Initialize();
+        }
+
+        public void Dispose()
+        { 
+            _stage.Dispose();
+        }
     }
 }

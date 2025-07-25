@@ -9,25 +9,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SaigeVision.Net.V2;
+using SaigeVision.Net.V2.Detection;
 using SaigeVision.Net.V2.IAD;
+using SaigeVision.Net.V2.Segmentation;
 
 namespace Vispect.Inspect
 {
     public class SaigeAI : IDisposable
     {
-        private enum EngineType { IAD, IAD_BATCH, SEG, SEG_BATCH, CLS, CLS_BATCH, DET, OCR, IEN }
-        private Dictionary<string, IADResult> _IADResults;
+        private enum EngineType { IAD, SEG, DET }
+        private EngineType _engineType = EngineType.IAD;
+        //private Dictionary<string, IADResult> _IADResults;
 
         IADEngine _iADEngine = null;
+        SegmentationEngine _segEngine = null;
+        DetectionEngine _detEngine = null;
+
         IADResult _iADresult = null;
+        SegmentationResult _segResult = null;
+        DetectionResult _detResult = null;
+       
         Bitmap _inspImage = null;
 
         public SaigeAI()
         { 
-            _IADResults = new Dictionary<string, IADResult>();
+            //_IADResults = new Dictionary<string, IADResult>();
         }
 
-        public void LoadEngine(string modelPath)
+        public void LoadEngine(string modelPath, string engineType)
         { 
             if (this._iADEngine != null)
                 this._iADEngine.Dispose();
@@ -93,6 +102,8 @@ namespace Vispect.Inspect
         }
 
 
+
+
         public Bitmap GetResultImage()
         {
             if (_iADresult == null || _inspImage is null)
@@ -104,6 +115,7 @@ namespace Vispect.Inspect
 
             return resultImage;
         }
+
 
         private bool disposed = false;
 

@@ -8,7 +8,7 @@ using Vispect.Inspect;
 
 namespace Vispect.Core
 {
-    internal class InspStage : IDisposable
+    public class InspStage : IDisposable
     {
 
         SaigeAI _saigeAI;
