@@ -33,19 +33,22 @@
             // 
             // cbImageFilter
             // 
+            this.cbImageFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbImageFilter.FormattingEnabled = true;
-            this.cbImageFilter.Location = new System.Drawing.Point(42, 58);
+            this.cbImageFilter.Location = new System.Drawing.Point(29, 39);
+            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbImageFilter.Name = "cbImageFilter";
-            this.cbImageFilter.Size = new System.Drawing.Size(177, 26);
+            this.cbImageFilter.Size = new System.Drawing.Size(160, 20);
             this.cbImageFilter.TabIndex = 0;
             // 
             // ImageFilterProp
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.cbImageFilter);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "ImageFilterProp";
-            this.Size = new System.Drawing.Size(319, 296);
+            this.Size = new System.Drawing.Size(223, 197);
             this.ResumeLayout(false);
 
         }

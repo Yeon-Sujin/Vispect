@@ -10,16 +10,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vispect.Core;
 using Vispect.Inspect;
+using static Vispect.Inspect.SaigeAI;
 
 namespace Vispect.Property
 {
     public partial class AIModuleProp : UserControl
     {
-        SaigeAI _saigeAI;
-        string _modelPath = string.Empty;
+        private SaigeAI _saigeAI;
+        private string _modelPath = string.Empty;
+        private EngineType _engineType = EngineType.IAD;
 
-        //private enum EngineType { IAD, SEG, DET }
-        //private EngineType _engineType = EngineType.IAD;
+        private enum EngineType { IAD, SEG, DET }
 
         public AIModuleProp()
         {
@@ -61,8 +62,8 @@ namespace Vispect.Property
         private void btnLoadModel_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_modelPath))
-            { 
-                MessageBox.Show("모델 파일을 선택해주세요,", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            {
+                MessageBox.Show("모델 파일을 선택해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -71,21 +72,9 @@ namespace Vispect.Property
                 _saigeAI = Global.Inst.InspStage.AIModule;
             }
 
-            switch (_engineType)
-            {
-                case EngineType.IAD:
-                    _saigeAI.LoadEngine(_modelPath);
-                    MessageBox.Show("IAD 모델이 성공적으로 로드되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-
-                case EngineType.SEG:
-                    MessageBox.Show("SEG 모델 경로가 설정되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-
-                case EngineType.DET:
-                    MessageBox.Show("DET 모델 경로가 설정되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-            }
+            _saigeAI.SelectedEngineType = (SaigeAI.EngineType)_engineType;
+            _saigeAI.LoadEngine(_modelPath);
+            MessageBox.Show("모델이 성공적으로 로드되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
@@ -93,27 +82,36 @@ namespace Vispect.Property
         {
             Bitmap bitmap = Global.Inst.InspStage.GetCurrentImage();
 
+            if (_saigeAI == null)
+            {
+                MessageBox.Show("AI 모듈이 초기화되지 않았습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Bitmap result = null;
+
             switch (_engineType)
             {
                 case EngineType.IAD:
-                    if (_saigeAI == null)
-                    {
-                        MessageBox.Show("AI 모듈이 초기화되지 않았습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    _saigeAI.InspIAD(bitmap);
-                    Bitmap iadResult = _saigeAI.GetResultImage();
-                    Global.Inst.InspStage.UpdateDisplay(iadResult);
+                    if (_saigeAI.InspIAD(bitmap))
+                        result = _saigeAI.GetResultImage();
                     break;
 
                 case EngineType.SEG:
-                    RunSeg(bitmap, _modelPath);
+                    if (_saigeAI.InspSEG(bitmap))
+                        result = _saigeAI.GetResultImage();
                     break;
 
                 case EngineType.DET:
-                    RunDetection(bitmap, _modelPath);
+                    if (_saigeAI.InspDET(bitmap))
+                        result = _saigeAI.GetResultImage();
                     break;
             }
+
+            if (result != null)
+                Global.Inst.InspStage.UpdateDisplay(result);
+            else
+                MessageBox.Show("검사 결과가 없습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
