@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using OpenCvSharp;
+using Vispect.ImagaeProcessing;
 
 namespace Vispect
 {
@@ -28,6 +30,8 @@ namespace Vispect
 
             Image bitmap = Image.FromFile(filePath);
             imageViewer.LoadBitmap((Bitmap)bitmap);
+
+
         }
 
         private void CameraForm_Resize(object sender, EventArgs e)
@@ -36,7 +40,7 @@ namespace Vispect
             imageViewer.Width = this.Width - margin * 2;
             imageViewer.Height = this.Height - margin * 2;
 
-            imageViewer.Location = new Point(margin, margin);
+            imageViewer.Location = new System.Drawing.Point(margin, margin);
         }
 
         public void UpdateDisplay(Bitmap bitmap = null)

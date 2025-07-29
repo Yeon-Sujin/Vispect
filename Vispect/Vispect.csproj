@@ -101,6 +101,7 @@
     <Compile Include="Core\ImageSpace.cs" />
     <Compile Include="Core\InspStage.cs" />
     <Compile Include="Inspect\SaigeAI.cs" />
+    <Compile Include="Property\ImageProcessing\ImageProcessor.cs" />
     <Compile Include="UIControl\ImageViewCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -36,19 +36,20 @@
             this.cbImageFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbImageFilter.FormattingEnabled = true;
             this.cbImageFilter.Location = new System.Drawing.Point(29, 39);
-            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(2);
             this.cbImageFilter.Name = "cbImageFilter";
-            this.cbImageFilter.Size = new System.Drawing.Size(160, 20);
+            this.cbImageFilter.Size = new System.Drawing.Size(186, 20);
             this.cbImageFilter.TabIndex = 0;
+            this.cbImageFilter.SelectionChangeCommitted += new System.EventHandler(this.cbImageFilter_SelectionChangeCommitted);
             // 
             // ImageFilterProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.cbImageFilter);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImageFilterProp";
-            this.Size = new System.Drawing.Size(223, 197);
+            this.Size = new System.Drawing.Size(267, 352);
             this.ResumeLayout(false);
 
         }
