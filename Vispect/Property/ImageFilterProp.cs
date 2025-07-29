@@ -12,7 +12,6 @@ namespace Vispect
 {
     public partial class ImageFilterProp : UserControl
     {
-
         public ImageFilterProp()
         {
             InitializeComponent();
