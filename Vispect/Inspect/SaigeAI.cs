@@ -20,7 +20,6 @@ namespace Vispect.Inspect
     {
         public enum EngineType { IAD, SEG, DET }
         private EngineType _engineType = EngineType.IAD;
-        //private Dictionary<string, IADResult> _IADResults;
 
         public EngineType SelectedEngineType
         {
@@ -37,21 +36,10 @@ namespace Vispect.Inspect
         private DetectionResult _detResult;
 
         private Bitmap _inspImage;
-        
-
-        //IADEngine _iadEngine = null;
-        //SegmentationEngine _segEngine = null;
-        //DetectionEngine _detEngine = null;
-
-        //IADResult _iadResult = null;
-        //SegmentationResult _segResult = null;
-        //DetectionResult _detResult = null;
-       
-        //Bitmap _inspImage = null;
 
         public SaigeAI()
         { 
-            //_IADResults = new Dictionary<string, IADResult>();
+
         }
 
         public void LoadEngine(string modelPath)
@@ -206,11 +194,9 @@ namespace Vispect.Inspect
             Graphics g = Graphics.FromImage(bmp);
             int step = 10;
 
-            // outline contour
             foreach (var prediction in result.DetectedObjects)
             {
                 SolidBrush brush = new SolidBrush(Color.FromArgb(127, prediction.ClassInfo.Color));
-                //g.DrawString(prediction.ClassInfo.Name + " : " + prediction.Area, new Font(FontFamily.GenericSansSerif, 50), brush, 10, step);
                 using (GraphicsPath gp = new GraphicsPath())
                 {
                     float x = (float)prediction.BoundingBox.X;

@@ -14,6 +14,7 @@ namespace Vispect
     public partial class MainForm : Form
     {
         private static DockPanel _dockPanel;
+        
 
         public MainForm()
         {

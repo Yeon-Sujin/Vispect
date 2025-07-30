@@ -29,27 +29,60 @@
         private void InitializeComponent()
         {
             this.cbImageFilter = new System.Windows.Forms.ComboBox();
+            this.btnApply = new System.Windows.Forms.Button();
+            this.btnOriginal = new System.Windows.Forms.Button();
+            this.btnUndo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbImageFilter
             // 
             this.cbImageFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbImageFilter.FormattingEnabled = true;
-            this.cbImageFilter.Location = new System.Drawing.Point(29, 39);
-            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(2);
+            this.cbImageFilter.Location = new System.Drawing.Point(36, 47);
             this.cbImageFilter.Name = "cbImageFilter";
-            this.cbImageFilter.Size = new System.Drawing.Size(186, 20);
+            this.cbImageFilter.Size = new System.Drawing.Size(305, 26);
             this.cbImageFilter.TabIndex = 0;
             this.cbImageFilter.SelectionChangeCommitted += new System.EventHandler(this.cbImageFilter_SelectionChangeCommitted);
             // 
+            // btnApply
+            // 
+            this.btnApply.BackColor = System.Drawing.SystemColors.Info;
+            this.btnApply.Location = new System.Drawing.Point(258, 119);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(83, 57);
+            this.btnApply.TabIndex = 1;
+            this.btnApply.Text = "적용";
+            this.btnApply.UseVisualStyleBackColor = false;
+            // 
+            // btnOriginal
+            // 
+            this.btnOriginal.Location = new System.Drawing.Point(146, 119);
+            this.btnOriginal.Name = "btnOriginal";
+            this.btnOriginal.Size = new System.Drawing.Size(83, 57);
+            this.btnOriginal.TabIndex = 17;
+            this.btnOriginal.Text = "원본";
+            this.btnOriginal.UseVisualStyleBackColor = true;
+            // 
+            // btnUndo
+            // 
+            this.btnUndo.BackColor = System.Drawing.SystemColors.Info;
+            this.btnUndo.Location = new System.Drawing.Point(36, 119);
+            this.btnUndo.Name = "btnUndo";
+            this.btnUndo.Size = new System.Drawing.Size(83, 57);
+            this.btnUndo.TabIndex = 19;
+            this.btnUndo.Text = "이전";
+            this.btnUndo.UseVisualStyleBackColor = false;
+            // 
             // ImageFilterProp
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnUndo);
+            this.Controls.Add(this.btnOriginal);
+            this.Controls.Add(this.btnApply);
             this.Controls.Add(this.cbImageFilter);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImageFilterProp";
-            this.Size = new System.Drawing.Size(267, 352);
+            this.Size = new System.Drawing.Size(381, 223);
             this.ResumeLayout(false);
 
         }
@@ -57,5 +90,8 @@
         #endregion
 
         private System.Windows.Forms.ComboBox cbImageFilter;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnOriginal;
+        private System.Windows.Forms.Button btnUndo;
     }
 }
