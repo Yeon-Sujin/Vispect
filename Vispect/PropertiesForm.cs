@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,7 +13,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
 {
-
     public enum PropertyType
     { 
         Binary,
@@ -23,6 +23,8 @@ namespace Vispect
     public partial class PropertiesForm : DockContent
     {
         Dictionary<string, TabPage> _allTabs = new Dictionary<string, TabPage>();
+
+        private ImageFilterProp filterProp;
 
         public PropertiesForm()
         {
@@ -68,6 +70,7 @@ namespace Vispect
         private UserControl CreateUserControl(PropertyType propType)
         {
             UserControl curProp = null;
+
             switch (propType)
             {
                 case PropertyType.Binary:
@@ -75,7 +78,8 @@ namespace Vispect
                     curProp = blobProp;
                     break;
                 case PropertyType.Filter:
-                    ImageFilterProp filterProp = new ImageFilterProp();
+                    //ImageFilterProp filterProp = new ImageFilterProp();
+                    filterProp = new ImageFilterProp();
                     curProp = filterProp;
                     break;
                 case PropertyType.AIModule:
@@ -87,6 +91,14 @@ namespace Vispect
                     return null;
             }
             return curProp;
+        }
+
+        public void SetImage(Mat image)
+        {
+            if (filterProp != null)
+            {
+                filterProp.SetOriginalImage(image);
+            }
         }
     }
 }

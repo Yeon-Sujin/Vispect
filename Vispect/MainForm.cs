@@ -68,6 +68,12 @@ namespace Vispect
                 {
                     string filePath = openFileDialog.FileName;
                     cameraForm.LoadImage(filePath);
+
+                    var propForm = GetDockForm<PropertiesForm>();
+                    if (propForm != null)
+                    {
+                        propForm.SetImage(cameraForm.CurrentMat);
+                    }
                 }
             }
         }
