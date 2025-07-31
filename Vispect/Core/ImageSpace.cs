@@ -350,7 +350,7 @@ namespace Vispect.Core
             return _imageInfo[index].ImageData;
         }
 
-        public IntPtr GetnspectionBufferPtr(int index = 0)
+        public IntPtr GetInspectionBufferPtr(int index = 0)
         {
             if (_imageInfo.Count <= index)
                 return IntPtr.Zero;

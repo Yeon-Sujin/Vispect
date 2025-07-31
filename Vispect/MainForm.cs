@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vispect.Core;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -29,6 +30,8 @@ namespace Vispect
             _dockPanel.Theme = new VS2015BlueTheme();
 
             LoadDockingWindows();
+
+            Global.Inst.Initialize();
         }
         private void LoadDockingWindows()
         {
@@ -36,6 +39,9 @@ namespace Vispect
 
             var cameraWindow = new CameraForm();
             cameraWindow.Show(_dockPanel, DockState.Document);
+
+            var runWindow = new RunForm();
+            runWindow.Show(cameraWindow.Pane, DockAlignment.Bottom, 0.2);
 
             var propWindow = new PropertiesForm();
             propWindow.Show(_dockPanel, DockState.DockRight);
@@ -64,6 +70,11 @@ namespace Vispect
                     cameraForm.LoadImage(filePath);
                 }
             }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Global.Inst.Dispose();
         }
     }
 }

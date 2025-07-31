@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using OpenCvSharp;
 using Vispect.ImagaeProcessing;
+using Vispect.Core;
 
 namespace Vispect
 {
@@ -44,7 +45,14 @@ namespace Vispect
         }
 
         public void UpdateDisplay(Bitmap bitmap = null)
-        { 
+        {
+            if (bitmap == null)
+            {
+                bitmap = Global.Inst.InspStage.GetBitmap(0);
+                if (bitmap == null)
+                    return;
+            }
+
             if (imageViewer != null)
                 imageViewer.LoadBitmap(bitmap);
         }

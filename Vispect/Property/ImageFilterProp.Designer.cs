@@ -32,6 +32,7 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.btnOriginal = new System.Windows.Forms.Button();
             this.btnUndo = new System.Windows.Forms.Button();
+            this.tabControlParams = new System.Windows.Forms.TabControl();
             this.SuspendLayout();
             // 
             // cbImageFilter
@@ -73,6 +74,14 @@
             this.btnUndo.Text = "이전";
             this.btnUndo.UseVisualStyleBackColor = false;
             // 
+            // tabControlParams
+            // 
+            this.tabControlParams.Location = new System.Drawing.Point(36, 221);
+            this.tabControlParams.Name = "tabControlParams";
+            this.tabControlParams.SelectedIndex = 0;
+            this.tabControlParams.Size = new System.Drawing.Size(305, 227);
+            this.tabControlParams.TabIndex = 20;
+            // 
             // ImageFilterProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
@@ -81,8 +90,9 @@
             this.Controls.Add(this.btnOriginal);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.cbImageFilter);
+            this.Controls.Add(this.tabControlParams);
             this.Name = "ImageFilterProp";
-            this.Size = new System.Drawing.Size(381, 223);
+            this.Size = new System.Drawing.Size(375, 487);
             this.ResumeLayout(false);
 
         }
@@ -93,5 +103,6 @@
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnOriginal;
         private System.Windows.Forms.Button btnUndo;
+        private System.Windows.Forms.TabControl tabControlParams;
     }
 }

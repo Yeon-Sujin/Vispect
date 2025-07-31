@@ -18,9 +18,19 @@ namespace Vispect
         private Mat originalImage;
         private Mat processedImage;
 
+        private ComboBox cbImageFilter;
+        private TabControl tabControlParams;
+
         public ImageFilterProp()
         {
             InitializeComponent();
+
+            cbImageFilter = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Location = new System.Drawing.Point(10, 10),
+                Width = 200
+            };
 
             cbImageFilter.Items.AddRange(new string[]
             {

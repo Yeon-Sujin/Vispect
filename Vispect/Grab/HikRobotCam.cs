@@ -8,65 +8,9 @@ using System.Threading.Tasks;
 using MvCameraControl;
 
 namespace Vispect.Grab
-{
-
-    struct GrabUserBuffer
+{    
+    internal class HikRobotCam : GrabModel
     {
-        private byte[] _imageBuffer;
-        private IntPtr _imageBufferPtr;
-        private GCHandle _imageHandle;
-
-        public byte[] ImageBuffer
-        {
-            get
-            {
-                return _imageBuffer;
-            }
-            set
-            { 
-                _imageBuffer = value;
-            }
-        }
-
-        public IntPtr ImageBufferPtr
-        {
-            get
-            {
-                return _imageBufferPtr;
-            }
-            set
-            { 
-                _imageBufferPtr = value;
-            }
-        }
-
-        public GCHandle ImageHandle
-        {
-            get
-            { 
-                return _imageHandle;
-            }
-            set
-            { 
-                _imageHandle = value;
-            }
-        }
-    }
-    internal class HikRobotCam : IDisposable
-    {
-        public delegate void GrabEventHandler<T>(object sender, T obj = null) where T : class;
-
-        public event GrabEventHandler<object> GrabCompleted;
-        public event GrabEventHandler<object> TransferCompleted;
-
-        protected GrabUserBuffer[] _userImageBuffer = null;
-
-        public int BufferIndex { get; set; } = 0;
-
-        internal bool HardwareTrigger { get; set; } = false;
-        
-        internal bool IncreaseBufferIndex { get; set; } = false ;
-
         private IDevice _device = null;
 
         void FrameGrabedEventHandler(object sender, FrameGrabbedEventArgs e)
@@ -118,11 +62,9 @@ namespace Vispect.Grab
             }
         }
 
-        private string _strIpAddr = "";
-
         #region Method
 
-        internal bool Create(string strIpAddr = null)
+        internal override bool Create(string strIpAddr = null)
         {
             SDKSystem.Initialize();
 
@@ -196,36 +138,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool InitGrab()
-        {
-            if (!Create())
-                return false;
-
-            if (!Open())
-                return false;
-
-            return true;
-        }
-
-        internal bool InitBuffer(int bufferCount = 1)
-        {
-            if (bufferCount < 1)
-                return false;
-
-            _userImageBuffer = new GrabUserBuffer[bufferCount];
-            return true;
-        }
-
-        internal bool SetBuffer(byte[] buffer, IntPtr bufferPtr, GCHandle bufferHandle, int bufferIndex = 0)
-        {
-            _userImageBuffer[bufferIndex].ImageBuffer = buffer;
-            _userImageBuffer[bufferIndex].ImageBufferPtr = bufferPtr;
-            _userImageBuffer[bufferIndex].ImageHandle = bufferHandle;
-
-            return true;
-        }
-
-        internal bool Grab(int bufferIndex, bool waitDone)
+        internal override bool Grab(int bufferIndex, bool waitDone)
         {
             if (_device == null)
                 return false;
@@ -252,7 +165,7 @@ namespace Vispect.Grab
             return ret;
         }
 
-        internal bool Close()
+        internal override bool Close()
         {
             if (_device != null)
             {
@@ -263,7 +176,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool Open()
+        internal override bool Open()
         {
             try
             {
@@ -337,7 +250,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool Reconnect()
+        internal override bool Reconnect()
         {
             if (_device is null)
             {
@@ -348,7 +261,7 @@ namespace Vispect.Grab
             return Open();
         }
 
-        internal bool GetPixelBpp(out int pixelBpp)
+        internal override bool GetPixelBpp(out int pixelBpp)
         {
             pixelBpp = 8;
             if (_device == null)
@@ -371,18 +284,9 @@ namespace Vispect.Grab
         }
         #endregion
 
-        protected void OnGrabCompleted(object obj = null)
-        {
-            GrabCompleted?.Invoke(this, obj);
-        }
-
-        protected void OnTransferCompleted(object obj = null)
-        {
-            TransferCompleted?.Invoke(this, obj);
-        }
 
         #region Parameter Setting
-        internal bool SetExposureTime(long exposure)
+        internal override bool SetExposureTime(long exposure)
         {
             if (_device == null)
                 return false;
@@ -398,7 +302,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool GetExposureTime(out long exposure)
+        internal override bool GetExposureTime(out long exposure)
         {
             exposure = 0;
             if (_device == null)
@@ -414,7 +318,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool SetGain(long gain)
+        internal override bool SetGain(float gain)
         {
             if (_device == null)
                 return false;
@@ -430,7 +334,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool GetGain(out long gain)
+        internal override bool GetGain(out float gain)
         {
             gain = 0;
             if (_device == null)
@@ -446,7 +350,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool GetResolution(out int width, out int height, out int stride)
+        internal override bool GetResolution(out int width, out int height, out int stride)
         {
             width = 0;
             height = 0;
@@ -493,7 +397,7 @@ namespace Vispect.Grab
             return true;
         }
 
-        internal bool SetTriggerMode(bool hardwareTrigger)
+        internal override bool SetTriggerMode(bool hardwareTrigger)
         {
             if (_device is null)
                 return false;
@@ -518,7 +422,7 @@ namespace Vispect.Grab
 
         private bool _disposed = false;
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (_disposed)
                 return;
@@ -539,11 +443,10 @@ namespace Vispect.Grab
             _disposed = true;
         }
 
-        public void Dispose()
+        internal override void Dispose()
         {
             Dispose(disposing: true);
         }
         #endregion //Disposable
     }
 }
-
