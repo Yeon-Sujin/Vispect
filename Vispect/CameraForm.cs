@@ -55,7 +55,7 @@ namespace Vispect
 
             return new Bitmap(img);
         }
-
+        
         public void LoadImage(string filePath)
         {
             if (!File.Exists(filePath))
