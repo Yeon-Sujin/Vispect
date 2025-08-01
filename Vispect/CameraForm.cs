@@ -88,19 +88,45 @@ namespace Vispect
 
         public void UpdateDisplay(Bitmap bitmap = null)
         {
+            Mat matToShow = null;
+            Bitmap bitmapToShow = null;
+
             if (bitmap != null)
             {
-                imageViewer.LoadBitmap(bitmap);
-                CurrentMat = BitmapConverter.ToMat(bitmap);
-                return;
+                // 외부에서 주어진 비트맵이 있으면 그걸 기준으로
+                bitmapToShow = bitmap;
+                matToShow = BitmapConverter.ToMat(bitmap);
+            }
+            else
+            {
+                // 없으면 InspStage에서 현재 Mat을 가져와서
+                Mat stageMat = Global.Inst.InspStage.GetMat();
+                if (stageMat != null)
+                {
+                    matToShow = stageMat.Clone();
+                    bitmapToShow = BitmapConverter.ToBitmap(matToShow);
+                }
+                else
+                {
+                    // fallback: InspStage에서 비트맵 직접 가져오기 (있다면)
+                    Bitmap bmp = Global.Inst.InspStage.GetBitmap(0);
+                    if (bmp != null)
+                    {
+                        bitmapToShow = bmp;
+                        matToShow = BitmapConverter.ToMat(bmp);
+                    }
+                }
             }
 
-            Bitmap bmp = Global.Inst.InspStage.GetBitmap(0);
-            if (bmp != null)
-            {
-                imageViewer.LoadBitmap(bmp);
-                CurrentMat = BitmapConverter.ToMat(bmp);
-            }
+            if (bitmapToShow == null || matToShow == null)
+                return;
+
+            // 1. 뷰어에 보여주고 CurrentMat 갱신
+            imageViewer.LoadBitmap(bitmapToShow);
+            CurrentMat = matToShow.Clone();
+
+            // 2. Preview 갱신 (현재 보여주는 Mat 기준)
+            Global.Inst.InspStage.PreView.SetImage(CurrentMat);
         }
 
         public Bitmap GetDisplayImage()
@@ -113,9 +139,20 @@ namespace Vispect
             if (mat == null)
                 return;
 
-            CurrentMat = mat.Clone();
+            // 화면용 비트맵 만들고 띄우기
             Bitmap bmp = BitmapConverter.ToBitmap(mat);
             imageViewer.LoadBitmap(bmp);
+
+            // CurrentMat 갱신 (복제)
+            CurrentMat = mat.Clone();
+
+            // Preview도 업데이트
+            Global.Inst.InspStage.PreView.SetImage(CurrentMat);
+        }
+
+        public void UpdateImageViewer()
+        { 
+            imageViewer.Invalidate();
         }
     }
 }

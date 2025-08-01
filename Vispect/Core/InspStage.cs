@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenCvSharp;
+using Vispect.Algorithm;
 using Vispect.Grab;
 using Vispect.Inspect;
 
@@ -19,6 +21,9 @@ namespace Vispect.Core
         private CameraType _camType = CameraType.WebCam;
 
         SaigeAI _saigeAI;
+
+        BlobAlgorithm _blobAlgorithm = null;
+        private PreviewImage _previewImage = null;
 
         public InspStage() { }
 
@@ -36,9 +41,22 @@ namespace Vispect.Core
             }
         }
 
+        public BlobAlgorithm BlobAlgorithm
+        { 
+            get => _blobAlgorithm;
+        }
+
+        public PreviewImage PreView
+        {
+            get => _previewImage;
+        }
+
         public bool Initialize()
         { 
             _imageSpace = new ImageSpace();
+
+            _blobAlgorithm = new BlobAlgorithm();
+            _previewImage = new PreviewImage();
 
             switch (_camType)
             {
@@ -83,6 +101,20 @@ namespace Vispect.Core
             }
 
             SetBuffer(bufferCount);
+
+            UpdateProperty();
+        }
+
+        private void UpdateProperty()
+        {
+            if (BlobAlgorithm is null)
+                return;
+
+            PropertiesForm propertiesForm = MainForm.GetDockForm<PropertiesForm>();
+            if (propertiesForm is null)
+                return;
+
+            propertiesForm.UpdateProperty(BlobAlgorithm);
         }
 
         public void SetBuffer(int bufferCount)
@@ -160,6 +192,20 @@ namespace Vispect.Core
                 return null;
 
             return Global.Inst.InspStage.ImageSpace.GetBitmap();
+        }
+
+        public Mat GetMat()
+        { 
+            return Global.Inst.InspStage.ImageSpace.GetMat();
+        }
+
+        public void RedrawMainView()
+        {
+            CameraForm cameraForm = MainForm.GetDockForm<CameraForm>();
+            if (cameraForm != null)
+            {
+                cameraForm.UpdateImageViewer();
+            }
         }
 
         private bool disposed = false;
