@@ -82,5 +82,12 @@ namespace Vispect
         {
             Global.Inst.Dispose();
         }
+
+        private void mnuSetupopen_Click(object sender, EventArgs e)
+        {
+            var setup = new SetupForm();
+            setup.StartPosition = FormStartPosition.CenterParent;
+            setup.Show(this);
+        }
     }
 }
