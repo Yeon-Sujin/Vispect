@@ -37,7 +37,7 @@ namespace Vispect.Core
             if (showBinMode == ShowBinaryMode.ShowBinaryNone)
             {
                 bmpImage = BitmapConverter.ToBitmap(_orignalImage);
-                cameraForm.UpdateDisplay(bmpImage);
+                cameraForm.UpdateDisplay(bmpImage, updatePreview: false);
                 return;
             }
 

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using OpenCvSharp;
 using Vispect.Algorithm;
 using Vispect.Grab;
@@ -24,6 +25,24 @@ namespace Vispect.Core
 
         BlobAlgorithm _blobAlgorithm = null;
         private PreviewImage _previewImage = null;
+
+        private int _lastBinLower = 0;
+        private int _lastBinUpper = 255;
+        private bool _lastBinInvert = false;
+        private ShowBinaryMode _lastShowMode = ShowBinaryMode.ShowBinaryNone;
+
+        public void CacheBinarySettings(int lower, int upper, bool invert, ShowBinaryMode showMode)
+        {
+            _lastBinLower = lower;
+            _lastBinUpper = upper;
+            _lastBinInvert = invert;
+            _lastShowMode = showMode;
+        }
+
+        public (int lower, int upper, bool invert, ShowBinaryMode showMode) GetCachedBinarySettings()
+        {
+            return (_lastBinLower, _lastBinUpper, _lastBinInvert, _lastShowMode);
+        }
 
         public InspStage() { }
 
@@ -138,6 +157,43 @@ namespace Vispect.Core
             }
         }
 
+        public void TryInspection()
+        {
+            if (_blobAlgorithm is null)
+                return;
+
+            Mat srcImage = Global.Inst.InspStage.GetMat();
+            _blobAlgorithm.SetInspData(srcImage);
+
+            _blobAlgorithm.InspRect = new Rect(0, 0, srcImage.Width, srcImage.Height);
+
+            if (_blobAlgorithm.DoInspect())
+            {
+                DisplayResult();
+            }
+        }
+
+        private bool DisplayResult()
+        {
+            if (_blobAlgorithm is null)
+                return false;
+
+            List<DrawInspectInfo> resultArea = new List<DrawInspectInfo>();
+            int resultCnt = _blobAlgorithm.GetResultRect(out resultArea);
+            if (resultCnt > 0)
+            {
+                //찾은 위치를 이미지상에서 표시
+                var cameraForm = MainForm.GetDockForm<CameraForm>();
+                if (cameraForm != null)
+                {
+                    cameraForm.ResetDisplay();
+                    cameraForm.AddRect(resultArea);
+                }
+            }
+
+            return true;
+        }
+
         public void Grab(int bufferIndex)
         {
             if (_grabManager == null)
@@ -205,6 +261,60 @@ namespace Vispect.Core
             if (cameraForm != null)
             {
                 cameraForm.UpdateImageViewer();
+            }
+        }
+
+        public void SetCameraType(CameraType newType)
+        {
+            if (_camType == newType)
+                return;
+
+            if (_grabManager != null)
+            {
+                try
+                {
+                    _grabManager.TransferCompleted -= _multiGrab_TransferCompleted;
+                }
+                catch { }
+                _grabManager = null;
+            }
+
+            _camType = newType;
+
+            switch (_camType)
+            {
+                case CameraType.WebCam:
+                    _grabManager = new WebCam();
+                    break;
+                case CameraType.HikRobotCam:
+                    _grabManager = new HikRobotCam();
+                    break;
+                default:
+                    _grabManager = new WebCam();
+                    break;
+            }
+
+            bool initOk = false;
+            if (_grabManager != null)
+            {
+                initOk = _grabManager.InitGrab();
+                if (!initOk)
+                {
+                    MessageBox.Show($"카메라 초기화 실패: {_camType}. 기본 WebCam으로 복구합니다.");
+                    _camType = CameraType.WebCam;
+                    _grabManager = new WebCam();
+                    initOk = _grabManager.InitGrab();
+                }
+
+                if (initOk)
+                {
+                    _grabManager.TransferCompleted += _multiGrab_TransferCompleted;
+                    InitModelGrab(MAX_GRAB_BUF);
+                }
+                else
+                {
+                    _grabManager = null;
+                }
             }
         }
 

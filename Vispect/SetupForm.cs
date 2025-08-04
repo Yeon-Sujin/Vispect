@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vispect.Core;
+using Vispect.Grab;
 
 namespace Vispect
 {
@@ -40,7 +42,7 @@ namespace Vispect
             comboCameraType.Items.AddRange(new string[] { "None", "WebCam", "HikRobotCam" });
             comboCameraType.SelectedIndex = 0;
 
-            btnApplyCamera.Click += BtnApplyCamera_Click;
+            btnApplyCamera.Click += btnApplyCamera_Click;
         }
 
         private void LoadOptionControl(SetupType setupType)
@@ -71,15 +73,22 @@ namespace Vispect
             _allTabs[tabName] = newTab;
         }
 
-        private void BtnApplyCamera_Click(object sender, EventArgs e)
+        private void btnApplyCamera_Click(object sender, EventArgs e)
         {
             string selected = comboCameraType.SelectedItem?.ToString() ?? "None";
             MessageBox.Show($"[Setup] Camera 적용: {selected}");
 
             if (selected != "None")
             {
-                // 예: 카메라 타입 변수 설정 (CameraType enum이 정의되어 있다고 가정)
-                // Global.Inst.InspStage.SetCameraType(...) 같은 메서드가 있으면 호출
+                CameraType type;
+                if (selected.Equals("WebCam", StringComparison.OrdinalIgnoreCase))
+                    type = CameraType.WebCam;
+                else if (selected.Equals("HikRobotCam", StringComparison.OrdinalIgnoreCase))
+                    type = CameraType.HikRobotCam;
+                else
+                    return;
+
+                Global.Inst.InspStage.SetCameraType(type);
             }
         }
     }
