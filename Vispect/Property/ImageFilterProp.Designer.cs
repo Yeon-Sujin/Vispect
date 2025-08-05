@@ -53,6 +53,13 @@
             this.btnOriginal = new System.Windows.Forms.Button();
             this.btnUndo = new System.Windows.Forms.Button();
             this.panelResizeOptions = new System.Windows.Forms.Panel();
+            this.panelCannyOptions = new System.Windows.Forms.Panel();
+            this.lblCannyLower = new System.Windows.Forms.Label();
+            this.lblCannyLowerValue = new System.Windows.Forms.Label();
+            this.lblCannyUpper = new System.Windows.Forms.Label();
+            this.lblCannyUpperValue = new System.Windows.Forms.Label();
+            this.trackBarCannyLower = new System.Windows.Forms.TrackBar();
+            this.trackBarCannyUpper = new System.Windows.Forms.TrackBar();
             this.lblResizeRange = new System.Windows.Forms.Label();
             this.lblWidth = new System.Windows.Forms.Label();
             this.numWidth = new System.Windows.Forms.NumericUpDown();
@@ -70,14 +77,10 @@
             this.lblRotateAngle = new System.Windows.Forms.Label();
             this.trackBarAngle = new System.Windows.Forms.TrackBar();
             this.lblAngleValue = new System.Windows.Forms.Label();
-            this.panelCannyOptions = new System.Windows.Forms.Panel();
-            this.lblCannyLower = new System.Windows.Forms.Label();
-            this.trackBarCannyLower = new System.Windows.Forms.TrackBar();
-            this.lblCannyLowerValue = new System.Windows.Forms.Label();
-            this.lblCannyUpper = new System.Windows.Forms.Label();
-            this.trackBarCannyUpper = new System.Windows.Forms.TrackBar();
-            this.lblCannyUpperValue = new System.Windows.Forms.Label();
             this.panelResizeOptions.SuspendLayout();
+            this.panelCannyOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyLower)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyUpper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHeight)).BeginInit();
             this.panelBinaryOptions.SuspendLayout();
@@ -85,9 +88,6 @@
             this.panelFlipOptions.SuspendLayout();
             this.panelRotateOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAngle)).BeginInit();
-            this.panelCannyOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyLower)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyUpper)).BeginInit();
             this.SuspendLayout();
             // 
             // cbImageFilter
@@ -95,7 +95,7 @@
             this.cbImageFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbImageFilter.FormattingEnabled = true;
             this.cbImageFilter.Location = new System.Drawing.Point(36, 46);
-            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbImageFilter.Margin = new System.Windows.Forms.Padding(4);
             this.cbImageFilter.Name = "cbImageFilter";
             this.cbImageFilter.Size = new System.Drawing.Size(307, 26);
             this.cbImageFilter.TabIndex = 0;
@@ -106,7 +106,7 @@
             this.btnApply.FlatAppearance.BorderSize = 0;
             this.btnApply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnApply.Location = new System.Drawing.Point(259, 118);
-            this.btnApply.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(4);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(83, 57);
             this.btnApply.TabIndex = 1;
@@ -120,7 +120,7 @@
             this.btnOriginal.FlatAppearance.BorderSize = 0;
             this.btnOriginal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOriginal.Location = new System.Drawing.Point(146, 118);
-            this.btnOriginal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOriginal.Margin = new System.Windows.Forms.Padding(4);
             this.btnOriginal.Name = "btnOriginal";
             this.btnOriginal.Size = new System.Drawing.Size(83, 57);
             this.btnOriginal.TabIndex = 2;
@@ -134,7 +134,7 @@
             this.btnUndo.FlatAppearance.BorderSize = 0;
             this.btnUndo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUndo.Location = new System.Drawing.Point(36, 118);
-            this.btnUndo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnUndo.Margin = new System.Windows.Forms.Padding(4);
             this.btnUndo.Name = "btnUndo";
             this.btnUndo.Size = new System.Drawing.Size(83, 57);
             this.btnUndo.TabIndex = 3;
@@ -144,18 +144,95 @@
             // 
             // panelResizeOptions
             // 
-            this.panelResizeOptions.Controls.Add(this.panelCannyOptions);
             this.panelResizeOptions.Controls.Add(this.lblResizeRange);
             this.panelResizeOptions.Controls.Add(this.lblWidth);
             this.panelResizeOptions.Controls.Add(this.numWidth);
             this.panelResizeOptions.Controls.Add(this.lblHeight);
             this.panelResizeOptions.Controls.Add(this.numHeight);
-            this.panelResizeOptions.Location = new System.Drawing.Point(36, 181);
-            this.panelResizeOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelResizeOptions.Location = new System.Drawing.Point(35, 186);
+            this.panelResizeOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelResizeOptions.Name = "panelResizeOptions";
             this.panelResizeOptions.Size = new System.Drawing.Size(307, 165);
             this.panelResizeOptions.TabIndex = 4;
             this.panelResizeOptions.Visible = false;
+            // 
+            // panelCannyOptions
+            // 
+            this.panelCannyOptions.Controls.Add(this.lblCannyLower);
+            this.panelCannyOptions.Controls.Add(this.lblCannyLowerValue);
+            this.panelCannyOptions.Controls.Add(this.lblCannyUpper);
+            this.panelCannyOptions.Controls.Add(this.lblCannyUpperValue);
+            this.panelCannyOptions.Controls.Add(this.trackBarCannyLower);
+            this.panelCannyOptions.Controls.Add(this.trackBarCannyUpper);
+            this.panelCannyOptions.Location = new System.Drawing.Point(37, 201);
+            this.panelCannyOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.panelCannyOptions.Name = "panelCannyOptions";
+            this.panelCannyOptions.Size = new System.Drawing.Size(307, 237);
+            this.panelCannyOptions.TabIndex = 8;
+            this.panelCannyOptions.Visible = false;
+            // 
+            // lblCannyLower
+            // 
+            this.lblCannyLower.AutoSize = true;
+            this.lblCannyLower.Location = new System.Drawing.Point(7, 12);
+            this.lblCannyLower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCannyLower.Name = "lblCannyLower";
+            this.lblCannyLower.Size = new System.Drawing.Size(68, 18);
+            this.lblCannyLower.TabIndex = 0;
+            this.lblCannyLower.Text = "하한값:";
+            // 
+            // lblCannyLowerValue
+            // 
+            this.lblCannyLowerValue.AutoSize = true;
+            this.lblCannyLowerValue.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblCannyLowerValue.Location = new System.Drawing.Point(83, 12);
+            this.lblCannyLowerValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCannyLowerValue.Name = "lblCannyLowerValue";
+            this.lblCannyLowerValue.Size = new System.Drawing.Size(38, 18);
+            this.lblCannyLowerValue.TabIndex = 2;
+            this.lblCannyLowerValue.Text = "100";
+            // 
+            // lblCannyUpper
+            // 
+            this.lblCannyUpper.AutoSize = true;
+            this.lblCannyUpper.Location = new System.Drawing.Point(7, 120);
+            this.lblCannyUpper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCannyUpper.Name = "lblCannyUpper";
+            this.lblCannyUpper.Size = new System.Drawing.Size(68, 18);
+            this.lblCannyUpper.TabIndex = 3;
+            this.lblCannyUpper.Text = "상한값:";
+            // 
+            // lblCannyUpperValue
+            // 
+            this.lblCannyUpperValue.AutoSize = true;
+            this.lblCannyUpperValue.Location = new System.Drawing.Point(83, 118);
+            this.lblCannyUpperValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCannyUpperValue.Name = "lblCannyUpperValue";
+            this.lblCannyUpperValue.Size = new System.Drawing.Size(38, 18);
+            this.lblCannyUpperValue.TabIndex = 5;
+            this.lblCannyUpperValue.Text = "200";
+            // 
+            // trackBarCannyLower
+            // 
+            this.trackBarCannyLower.Location = new System.Drawing.Point(11, 45);
+            this.trackBarCannyLower.Margin = new System.Windows.Forms.Padding(4);
+            this.trackBarCannyLower.Maximum = 255;
+            this.trackBarCannyLower.Name = "trackBarCannyLower";
+            this.trackBarCannyLower.Size = new System.Drawing.Size(286, 69);
+            this.trackBarCannyLower.TabIndex = 1;
+            this.trackBarCannyLower.Value = 100;
+            this.trackBarCannyLower.Scroll += new System.EventHandler(this.trackBarCannyLower_Scroll);
+            // 
+            // trackBarCannyUpper
+            // 
+            this.trackBarCannyUpper.Location = new System.Drawing.Point(11, 153);
+            this.trackBarCannyUpper.Margin = new System.Windows.Forms.Padding(4);
+            this.trackBarCannyUpper.Maximum = 255;
+            this.trackBarCannyUpper.Name = "trackBarCannyUpper";
+            this.trackBarCannyUpper.Size = new System.Drawing.Size(286, 69);
+            this.trackBarCannyUpper.TabIndex = 4;
+            this.trackBarCannyUpper.Value = 200;
+            this.trackBarCannyUpper.Scroll += new System.EventHandler(this.trackBarCannyUpper_Scroll);
             // 
             // lblResizeRange
             // 
@@ -180,7 +257,7 @@
             // numWidth
             // 
             this.numWidth.Location = new System.Drawing.Point(100, 34);
-            this.numWidth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.numWidth.Margin = new System.Windows.Forms.Padding(4);
             this.numWidth.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -213,7 +290,7 @@
             // numHeight
             // 
             this.numHeight.Location = new System.Drawing.Point(100, 80);
-            this.numHeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.numHeight.Margin = new System.Windows.Forms.Padding(4);
             this.numHeight.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -238,8 +315,8 @@
             this.panelBinaryOptions.Controls.Add(this.lblBinaryThreshold);
             this.panelBinaryOptions.Controls.Add(this.trackBarThreshold);
             this.panelBinaryOptions.Controls.Add(this.lblThresholdValue);
-            this.panelBinaryOptions.Location = new System.Drawing.Point(36, 180);
-            this.panelBinaryOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelBinaryOptions.Location = new System.Drawing.Point(32, 227);
+            this.panelBinaryOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelBinaryOptions.Name = "panelBinaryOptions";
             this.panelBinaryOptions.Size = new System.Drawing.Size(307, 120);
             this.panelBinaryOptions.TabIndex = 5;
@@ -258,7 +335,7 @@
             // trackBarThreshold
             // 
             this.trackBarThreshold.Location = new System.Drawing.Point(11, 45);
-            this.trackBarThreshold.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarThreshold.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarThreshold.Maximum = 255;
             this.trackBarThreshold.Name = "trackBarThreshold";
             this.trackBarThreshold.Size = new System.Drawing.Size(286, 69);
@@ -281,8 +358,8 @@
             this.panelFlipOptions.Controls.Add(this.radioHorizontal);
             this.panelFlipOptions.Controls.Add(this.radioVertical);
             this.panelFlipOptions.Controls.Add(this.radioBoth);
-            this.panelFlipOptions.Location = new System.Drawing.Point(36, 180);
-            this.panelFlipOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelFlipOptions.Location = new System.Drawing.Point(36, 201);
+            this.panelFlipOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelFlipOptions.Name = "panelFlipOptions";
             this.panelFlipOptions.Size = new System.Drawing.Size(307, 150);
             this.panelFlipOptions.TabIndex = 6;
@@ -292,7 +369,7 @@
             // 
             this.radioHorizontal.AutoSize = true;
             this.radioHorizontal.Location = new System.Drawing.Point(11, 38);
-            this.radioHorizontal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioHorizontal.Margin = new System.Windows.Forms.Padding(4);
             this.radioHorizontal.Name = "radioHorizontal";
             this.radioHorizontal.Size = new System.Drawing.Size(69, 22);
             this.radioHorizontal.TabIndex = 0;
@@ -302,7 +379,7 @@
             // 
             this.radioVertical.AutoSize = true;
             this.radioVertical.Location = new System.Drawing.Point(11, 68);
-            this.radioVertical.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioVertical.Margin = new System.Windows.Forms.Padding(4);
             this.radioVertical.Name = "radioVertical";
             this.radioVertical.Size = new System.Drawing.Size(69, 22);
             this.radioVertical.TabIndex = 1;
@@ -312,7 +389,7 @@
             // 
             this.radioBoth.AutoSize = true;
             this.radioBoth.Location = new System.Drawing.Point(11, 98);
-            this.radioBoth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBoth.Margin = new System.Windows.Forms.Padding(4);
             this.radioBoth.Name = "radioBoth";
             this.radioBoth.Size = new System.Drawing.Size(126, 22);
             this.radioBoth.TabIndex = 2;
@@ -323,8 +400,8 @@
             this.panelRotateOptions.Controls.Add(this.lblRotateAngle);
             this.panelRotateOptions.Controls.Add(this.trackBarAngle);
             this.panelRotateOptions.Controls.Add(this.lblAngleValue);
-            this.panelRotateOptions.Location = new System.Drawing.Point(36, 180);
-            this.panelRotateOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelRotateOptions.Location = new System.Drawing.Point(37, 201);
+            this.panelRotateOptions.Margin = new System.Windows.Forms.Padding(4);
             this.panelRotateOptions.Name = "panelRotateOptions";
             this.panelRotateOptions.Size = new System.Drawing.Size(307, 135);
             this.panelRotateOptions.TabIndex = 7;
@@ -343,7 +420,7 @@
             // trackBarAngle
             // 
             this.trackBarAngle.Location = new System.Drawing.Point(11, 45);
-            this.trackBarAngle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarAngle.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarAngle.Maximum = 365;
             this.trackBarAngle.Minimum = 1;
             this.trackBarAngle.Name = "trackBarAngle";
@@ -362,102 +439,29 @@
             this.lblAngleValue.TabIndex = 2;
             this.lblAngleValue.Text = "90°";
             // 
-            // panelCannyOptions
-            // 
-            this.panelCannyOptions.Controls.Add(this.lblCannyLower);
-            this.panelCannyOptions.Controls.Add(this.lblCannyLowerValue);
-            this.panelCannyOptions.Controls.Add(this.lblCannyUpper);
-            this.panelCannyOptions.Controls.Add(this.lblCannyUpperValue);
-            this.panelCannyOptions.Controls.Add(this.trackBarCannyLower);
-            this.panelCannyOptions.Controls.Add(this.trackBarCannyUpper);
-            this.panelCannyOptions.Location = new System.Drawing.Point(0, 8);
-            this.panelCannyOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.panelCannyOptions.Name = "panelCannyOptions";
-            this.panelCannyOptions.Size = new System.Drawing.Size(307, 237);
-            this.panelCannyOptions.TabIndex = 8;
-            this.panelCannyOptions.Visible = false;
-            // 
-            // lblCannyLower
-            // 
-            this.lblCannyLower.AutoSize = true;
-            this.lblCannyLower.Location = new System.Drawing.Point(7, 12);
-            this.lblCannyLower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCannyLower.Name = "lblCannyLower";
-            this.lblCannyLower.Size = new System.Drawing.Size(68, 18);
-            this.lblCannyLower.TabIndex = 0;
-            this.lblCannyLower.Text = "하한값:";
-            // 
-            // trackBarCannyLower
-            // 
-            this.trackBarCannyLower.Location = new System.Drawing.Point(11, 45);
-            this.trackBarCannyLower.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.trackBarCannyLower.Maximum = 255;
-            this.trackBarCannyLower.Name = "trackBarCannyLower";
-            this.trackBarCannyLower.Size = new System.Drawing.Size(286, 69);
-            this.trackBarCannyLower.TabIndex = 1;
-            this.trackBarCannyLower.Value = 100;
-            this.trackBarCannyLower.Scroll += new System.EventHandler(this.trackBarCannyLower_Scroll);
-            // 
-            // lblCannyLowerValue
-            // 
-            this.lblCannyLowerValue.AutoSize = true;
-            this.lblCannyLowerValue.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblCannyLowerValue.Location = new System.Drawing.Point(83, 12);
-            this.lblCannyLowerValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCannyLowerValue.Name = "lblCannyLowerValue";
-            this.lblCannyLowerValue.Size = new System.Drawing.Size(38, 18);
-            this.lblCannyLowerValue.TabIndex = 2;
-            this.lblCannyLowerValue.Text = "100";
-            // 
-            // lblCannyUpper
-            // 
-            this.lblCannyUpper.AutoSize = true;
-            this.lblCannyUpper.Location = new System.Drawing.Point(7, 120);
-            this.lblCannyUpper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCannyUpper.Name = "lblCannyUpper";
-            this.lblCannyUpper.Size = new System.Drawing.Size(68, 18);
-            this.lblCannyUpper.TabIndex = 3;
-            this.lblCannyUpper.Text = "상한값:";
-            // 
-            // trackBarCannyUpper
-            // 
-            this.trackBarCannyUpper.Location = new System.Drawing.Point(11, 153);
-            this.trackBarCannyUpper.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.trackBarCannyUpper.Maximum = 255;
-            this.trackBarCannyUpper.Name = "trackBarCannyUpper";
-            this.trackBarCannyUpper.Size = new System.Drawing.Size(286, 69);
-            this.trackBarCannyUpper.TabIndex = 4;
-            this.trackBarCannyUpper.Value = 200;
-            this.trackBarCannyUpper.Scroll += new System.EventHandler(this.trackBarCannyUpper_Scroll);
-            // 
-            // lblCannyUpperValue
-            // 
-            this.lblCannyUpperValue.AutoSize = true;
-            this.lblCannyUpperValue.Location = new System.Drawing.Point(83, 118);
-            this.lblCannyUpperValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCannyUpperValue.Name = "lblCannyUpperValue";
-            this.lblCannyUpperValue.Size = new System.Drawing.Size(38, 18);
-            this.lblCannyUpperValue.TabIndex = 5;
-            this.lblCannyUpperValue.Text = "200";
-            // 
             // ImageFilterProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panelCannyOptions);
             this.Controls.Add(this.panelBinaryOptions);
             this.Controls.Add(this.panelFlipOptions);
+            this.Controls.Add(this.panelResizeOptions);
             this.Controls.Add(this.panelRotateOptions);
             this.Controls.Add(this.btnUndo);
             this.Controls.Add(this.btnOriginal);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.cbImageFilter);
-            this.Controls.Add(this.panelResizeOptions);
             this.Font = new System.Drawing.Font("굴림", 9F);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ImageFilterProp";
             this.Size = new System.Drawing.Size(376, 454);
             this.panelResizeOptions.ResumeLayout(false);
             this.panelResizeOptions.PerformLayout();
+            this.panelCannyOptions.ResumeLayout(false);
+            this.panelCannyOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyLower)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyUpper)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHeight)).EndInit();
             this.panelBinaryOptions.ResumeLayout(false);
@@ -468,10 +472,6 @@
             this.panelRotateOptions.ResumeLayout(false);
             this.panelRotateOptions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAngle)).EndInit();
-            this.panelCannyOptions.ResumeLayout(false);
-            this.panelCannyOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyLower)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarCannyUpper)).EndInit();
             this.ResumeLayout(false);
 
         }

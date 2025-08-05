@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Vispect.Teach;
 
 namespace Vispect.Core
 {
@@ -13,12 +14,19 @@ namespace Vispect.Core
     {
         private Mat _orignalImage = null;
         private Mat _previewImage = null;
+
+        private InspWindow _inspWindow = null;
         private bool _usePreview = true;
 
         public void SetImage(Mat image)
         { 
             _orignalImage = image;
             _previewImage = new Mat();
+        }
+
+        public void SetInspWindow(InspWindow inspwindow)
+        {
+            _inspWindow = inspwindow;
         }
 
         public void SetBinary(int lowerValue, int upperValue, bool invert, ShowBinaryMode showBinMode)
@@ -43,6 +51,12 @@ namespace Vispect.Core
 
             Rect windowArea = new Rect(0, 0, _orignalImage.Width, _orignalImage.Height);
 
+            //InspWindow가 있다면 프리뷰 설정 영역을 ROI로 변경
+            if (_inspWindow != null)
+            {
+                windowArea = _inspWindow.WindowArea;
+            }
+
             Mat orgRoi = _orignalImage[windowArea];
 
             Mat grayImage = new Mat();
@@ -57,6 +71,7 @@ namespace Vispect.Core
             if (invert)
                 binaryMask = ~binaryMask;
 
+            // binaryMask는 ROI 사이즈이므로 fullBinaryMask로 확장
             Mat fullBinaryMask = Mat.Zeros(_orignalImage.Size(), MatType.CV_8UC1);
             binaryMask.CopyTo(new Mat(fullBinaryMask, windowArea));
 

@@ -11,6 +11,8 @@ namespace Vispect.Algorithm
     { 
         InspNone = -1,
         InspBinary,
+        InspFilter,
+        InspAIModule,
         InspCount
     }
 
@@ -25,6 +27,21 @@ namespace Vispect.Algorithm
         protected Mat _srcImage = null;
         public List<string> ResultString { get; set; } = new List<string>();
         public bool IsDefect {  get; set; }
+
+        public abstract InspAlgorithm Clone();
+        public abstract bool CopyFrom(InspAlgorithm sourceAlgo);
+
+        /// <summary>자식 클래스에서 공통 필드를 복사하려고 부르는 헬퍼</summary>
+        protected void CopyBaseTo(InspAlgorithm target)
+        {
+            target.InspectType = this.InspectType;
+            target.IsUse = this.IsUse;
+            target.IsInspected = this.IsInspected;
+            target.TeachRect = this.TeachRect;
+            target.InspRect = this.InspRect;
+            // NOTE: _srcImage 는 런타임 검사용이라 복사하지 않음
+        }
+
         public virtual void SetInspData(Mat srcImage)
         {
             _srcImage = srcImage;

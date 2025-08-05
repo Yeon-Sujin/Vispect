@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Vispect.Algorithm;
 using Vispect.Core;
 using Vispect.Property;
+using Vispect.Teach;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -106,9 +107,9 @@ namespace Vispect
             }
         }
 
-        public void UpdateProperty(BlobAlgorithm blobAlgorithm)
+        public void UpdateProperty(InspWindow window)
         {
-            if (blobAlgorithm is null)
+            if (window is null)
                 return;
 
             foreach (TabPage tabPage in tabPropControl.TabPages)
@@ -119,7 +120,11 @@ namespace Vispect
 
                     if (uc is BinaryProp binaryProp)
                     {
-                        binaryProp.SetAlgorithm(blobAlgorithm);
+                        BlobAlgorithm blobAlgo = (BlobAlgorithm)window.FindInspAlgorithm(InspectType.InspBinary);
+                        if (blobAlgo is null)
+                            continue;
+
+                        binaryProp.SetAlgorithm(blobAlgo);
                     }
                 }
             }

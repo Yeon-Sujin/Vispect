@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vispect.Core;
+using Vispect.Setting;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -78,16 +79,15 @@ namespace Vispect
             }
         }
 
+        private void mnuSetupopen_Click(object sender, EventArgs e)
+        {
+            SetupForm setupForm = new SetupForm();
+            setupForm.ShowDialog();
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Global.Inst.Dispose();
-        }
-
-        private void mnuSetupopen_Click(object sender, EventArgs e)
-        {
-            var setup = new SetupForm();
-            setup.StartPosition = FormStartPosition.CenterParent;
-            setup.Show(this);
         }
     }
 }

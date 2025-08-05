@@ -8,6 +8,7 @@ namespace Vispect.Core
 {
     public class Global : IDisposable
     {
+        #region Singleton Instance
         private static readonly Lazy<Global> _instance = new Lazy<Global>(() => new Global());
 
         public static Global Inst
@@ -17,6 +18,7 @@ namespace Vispect.Core
                 return _instance.Value;
             }
         }
+        #endregion
 
         private InspStage _stage = new InspStage();
 

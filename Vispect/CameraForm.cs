@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using Vispect.Algorithm;
 using Vispect.Core;
 using Vispect.ImagaeProcessing;
+using Vispect.Teach;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -27,6 +28,41 @@ namespace Vispect
         public CameraForm()
         {
             InitializeComponent();
+
+            imageViewer.DiagramEntityEvent += ImageViewer_DiagramEntityEvent;
+        }
+
+        private void ImageViewer_DiagramEntityEvent(object sender, DiagramEntityEventArgs e)
+        {
+            switch (e.ActionType)
+            {
+                case EntityActionType.Select:
+                    Global.Inst.InspStage.SelectInspWindow(e.InspWindow);
+                    imageViewer.Focus();
+                    break;
+                case EntityActionType.Inspect:
+                    UpdateDiagramEntity();
+                    Global.Inst.InspStage.TryInspection(e.InspWindow);
+                    break;
+                case EntityActionType.Add:
+                    Global.Inst.InspStage.AddInspWindow(e.WindowType, e.Rect);
+                    break;
+                case EntityActionType.Copy:
+                    Global.Inst.InspStage.AddInspWindow(e.InspWindow, e.OffsetMove);
+                    break;
+                case EntityActionType.Move:
+                    Global.Inst.InspStage.MoveInspWindow(e.InspWindow, e.OffsetMove);
+                    break;
+                case EntityActionType.Resize:
+                    Global.Inst.InspStage.ModifyInspWindow(e.InspWindow, e.Rect);
+                    break;
+                case EntityActionType.Delete:
+                    Global.Inst.InspStage.DelInspWindow(e.InspWindow);
+                    break;
+                case EntityActionType.DeleteList:
+                    Global.Inst.InspStage.DelInspWindow(e.InspWindowList);
+                    break;
+            }
         }
 
         private Bitmap FixOrientation(Image img)
@@ -143,6 +179,38 @@ namespace Vispect
             imageViewer.Invalidate();
         }
 
+        public void UpdateDiagramEntity()
+        {
+            imageViewer.ResetEntity();
+
+            Model model = Global.Inst.InspStage.CurModel;
+            List<DiagramEntity> diagramEntityList = new List<DiagramEntity>();
+
+            foreach (InspWindow window in model.InspWindowList)
+            {
+                if (window is null)
+                    continue;
+
+                DiagramEntity entity = new DiagramEntity()
+                {
+                    LinkedWindow = window,
+                    EntityROI = new Rectangle(
+                        window.WindowArea.X, window.WindowArea.Y,
+                            window.WindowArea.Width, window.WindowArea.Height),
+                    EntityColor = imageViewer.GetWindowColor(window.InspWindowType),
+                    IsHold = window.IsTeach
+                };
+                diagramEntityList.Add(entity);
+            }
+
+            imageViewer.SetDiagramEntityList(diagramEntityList);
+        }
+
+        public void SelectDiagramEntity(InspWindow window)
+        {
+            imageViewer.SelectDiagramEntity(window);
+        }
+
         public void ResetDisplay()
         {
             imageViewer.ResetEntity();
@@ -151,6 +219,11 @@ namespace Vispect
         public void AddRect(List<DrawInspectInfo> rectInfos)
         {
             imageViewer.AddRect(rectInfos);
+        }
+
+        public void AddRoi(InspWindowType inspWindowType)
+        {
+            imageViewer.NewRoi(inspWindowType);
         }
     }
 }
