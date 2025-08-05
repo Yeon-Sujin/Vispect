@@ -1,15 +1,16 @@
-﻿using System;
+﻿using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using Vispect.Algorithm;
 using Vispect.Grab;
 using Vispect.Inspect;
+using Vispect.Setting;
 using Vispect.Teach;
 
 namespace Vispect.Core
@@ -25,31 +26,11 @@ namespace Vispect.Core
 
         SaigeAI _saigeAI;
 
-        BlobAlgorithm _blobAlgorithm = null; //확인필요...
-
         private PreviewImage _previewImage = null;
-
-        private int _lastBinLower = 0; //~
-        private int _lastBinUpper = 255;
-        private bool _lastBinInvert = false;
-        private ShowBinaryMode _lastShowMode = ShowBinaryMode.ShowBinaryNone; //~ 확인하기
 
         private Model _model = null;
 
         private InspWindow _selectedInspWindow = null;
-
-        public void CacheBinarySettings(int lower, int upper, bool invert, ShowBinaryMode showMode)
-        {
-            _lastBinLower = lower;
-            _lastBinUpper = upper;
-            _lastBinInvert = invert;
-            _lastShowMode = showMode;
-        } //확인하기
-
-        //public (int lower, int upper, bool invert, ShowBinaryMode showMode) GetCachedBinarySettings()
-        //{
-        //    return (_lastBinLower, _lastBinUpper, _lastBinInvert, _lastShowMode);
-        //}
 
         public InspStage() { }
 
@@ -67,11 +48,6 @@ namespace Vispect.Core
             }
         }
 
-        //public BlobAlgorithm BlobAlgorithm
-        //{ 
-        //    get => _blobAlgorithm;
-        //}
-
         public PreviewImage PreView
         {
             get => _previewImage;
@@ -88,7 +64,6 @@ namespace Vispect.Core
         { 
             _imageSpace = new ImageSpace();
 
-            _blobAlgorithm = new BlobAlgorithm(); //확인필요
             _previewImage = new PreviewImage();
 
             _model = new Model();
@@ -117,6 +92,12 @@ namespace Vispect.Core
             return true;
         }
 
+        private void LoadSetting()
+        {
+            //카메라 설정 타입 얻기
+            _camType = SettingXml.Inst.CamType;
+        }
+
         public void InitModelGrab(int bufferCount)
         {
             if (_grabManager == null)
@@ -137,21 +118,11 @@ namespace Vispect.Core
 
             SetBuffer(bufferCount);
 
-            //UpdateProperty();
-
+            //_grabManager.SetExposureTime(25000);
         }
 
         private void UpdateProperty(InspWindow inspWindow)
         {
-            //if (BlobAlgorithm is null)
-            //    return;
-
-            //PropertiesForm propertiesForm = MainForm.GetDockForm<PropertiesForm>();
-            //if (propertiesForm is null)
-            //    return;
-
-            //propertiesForm.UpdateProperty(BlobAlgorithm);
-
             if (inspWindow is null)
                 return;
 
@@ -185,19 +156,6 @@ namespace Vispect.Core
 
         public void TryInspection(InspWindow inspWindow = null)
         {
-            //if (_blobAlgorithm is null)
-            //    return;
-
-            //Mat srcImage = Global.Inst.InspStage.GetMat();
-            //_blobAlgorithm.SetInspData(srcImage);
-
-            //_blobAlgorithm.InspRect = new Rect(0, 0, srcImage.Width, srcImage.Height);
-
-            //if (_blobAlgorithm.DoInspect())
-            //{
-            //    DisplayResult();
-            //}
-
             if (inspWindow is null)
             {
                 if (_selectedInspWindow is null)
@@ -366,27 +324,6 @@ namespace Vispect.Core
             UpdateDiagramEntity();
         }
 
-        private bool DisplayResult()
-        {
-            if (_blobAlgorithm is null)
-                return false;
-
-            List<DrawInspectInfo> resultArea = new List<DrawInspectInfo>();
-            int resultCnt = _blobAlgorithm.GetResultRect(out resultArea);
-            if (resultCnt > 0)
-            {
-                //찾은 위치를 이미지상에서 표시
-                var cameraForm = MainForm.GetDockForm<CameraForm>();
-                if (cameraForm != null)
-                {
-                    cameraForm.ResetDisplay();
-                    cameraForm.AddRect(resultArea);
-                }
-            }
-
-            return true;
-        }
-
         public void Grab(int bufferIndex)
         {
             if (_grabManager == null)
@@ -485,78 +422,40 @@ namespace Vispect.Core
             }
         }
 
-        public void SetCameraType(CameraType newType)
-        {
-            if (_camType == newType)
-                return;
+        #region Disposable
 
-            if (_grabManager != null)
-            {
-                try
-                {
-                    _grabManager.TransferCompleted -= _multiGrab_TransferCompleted;
-                }
-                catch { }
-                _grabManager = null;
-            }
-
-            _camType = newType;
-
-            switch (_camType)
-            {
-                case CameraType.WebCam:
-                    _grabManager = new WebCam();
-                    break;
-                case CameraType.HikRobotCam:
-                    _grabManager = new HikRobotCam();
-                    break;
-                default:
-                    _grabManager = new WebCam();
-                    break;
-            }
-
-            bool initOk = false;
-            if (_grabManager != null)
-            {
-                initOk = _grabManager.InitGrab();
-                if (!initOk)
-                {
-                    MessageBox.Show($"카메라 초기화 실패: {_camType}. 기본 WebCam으로 복구합니다.");
-                    _camType = CameraType.WebCam;
-                    _grabManager = new WebCam();
-                    initOk = _grabManager.InitGrab();
-                }
-
-                if (initOk)
-                {
-                    _grabManager.TransferCompleted += _multiGrab_TransferCompleted;
-                    InitModelGrab(MAX_GRAB_BUF);
-                }
-                else
-                {
-                    _grabManager = null;
-                }
-            }
-        }
-
-        private bool disposed = false;
+        private bool disposed = false; // to detect redundant calls
 
         protected virtual void Dispose(bool disposing)
-        { 
+        {
             if (!disposed)
             {
                 if (disposing)
-                { 
-                    
+                {
+                    // Dispose managed resources.
+                    if (_saigeAI != null)
+                    {
+                        _saigeAI.Dispose();
+                        _saigeAI = null;
+                    }
+                    if (_grabManager != null)
+                    {
+                        _grabManager.Dispose();
+                        _grabManager = null;
+                    }
                 }
+
+                // Dispose unmanaged managed resources.
 
                 disposed = true;
             }
         }
 
         public void Dispose()
-        { 
+        {
             Dispose(true);
         }
+
+        #endregion //Disposable
     }
 }

@@ -16,6 +16,7 @@ namespace Vispect.Setting
         {
             InitializeComponent();
             //최초 로딩시, 환경설정 정보 로딩
+
             LoadSetting();
         }
 

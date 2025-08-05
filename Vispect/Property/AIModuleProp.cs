@@ -25,22 +25,39 @@ namespace Vispect.Property
         public AIModuleProp()
         {
             InitializeComponent();
-            cbEngineSelect.SelectedIndex = 0;
+
+            // ComboBox에 EngineType 문자열을 바인딩
+            cbEngineSelect.DataSource =
+                Enum.GetNames(typeof(EngineType))
+                    .ToList();
+
+            // 기본 선택값 지정(원한다면)
+            cbEngineSelect.SelectedItem = EngineType.IAD.ToString();
         }
 
         private void cbEngineSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (cbEngineSelect.SelectedItem.ToString())
+            // 1) SelectedItem 이 null 이거나 문자열이 아니면 무시
+            if (!(cbEngineSelect.SelectedItem is string selected)
+                || string.IsNullOrWhiteSpace(selected))
             {
-                case "IAD":
-                    _engineType = EngineType.IAD;
-                    break;
-                case "SEG":
-                    _engineType = EngineType.SEG;
-                    break;
-                case "DET":
-                    _engineType = EngineType.DET;
-                    break;
+                return;
+            }
+
+            // 2) Enum.TryParse 로 안전하게 변환 시도
+            if (Enum.TryParse<EngineType>(selected, ignoreCase: true, out var engine))
+            {
+                _engineType = engine;
+            }
+            else
+            {
+                // 3) 파싱 실패 시 안내
+                MessageBox.Show(
+                    $"알 수 없는 엔진 타입입니다: '{selected}'",
+                    "경고",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
         }
 
@@ -106,6 +123,10 @@ namespace Vispect.Property
                     if (_saigeAI.InspDET(bitmap))
                         result = _saigeAI.GetResultImage();
                     break;
+
+                default:
+                    MessageBox.Show("지원되지 않는 AI 엔진 타입입니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
             }
 
             if (result != null)

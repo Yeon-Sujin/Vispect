@@ -137,7 +137,6 @@ namespace Vispect
             bool invert = e.Invert;
             ShowBinaryMode showBinMode = e.ShowBinMode;
             Global.Inst.InspStage.PreView?.SetBinary(lowerValue, upperValue, invert, showBinMode);
-            Global.Inst.InspStage.CacheBinarySettings(lowerValue, upperValue, invert, showBinMode);
             Global.Inst.InspStage.RedrawMainView();
         }
 

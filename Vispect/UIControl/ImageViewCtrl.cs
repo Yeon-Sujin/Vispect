@@ -129,6 +129,7 @@ namespace Vispect
         {
             _newRoiType = inspWindowType;
             _selColor = GetWindowColor(inspWindowType);
+            Cursor = Cursors.Cross;
         }
 
         public Bitmap GetCurBitmap()
@@ -149,8 +150,9 @@ namespace Vispect
             float virtualHeight = _bitmapImage.Height * _curZoom;
 
             float offsetX = virtualWidth < Width ? (Width - virtualWidth) / 2f : 0f;
-            float offsetY = virtualHeight < Height ? (Height - virtualHeight) / 2f : 0f; 
+            float offsetY = virtualHeight < Height ? (Height - virtualHeight) / 2f : 0f;
 
+            ImageRect = new RectangleF(offsetX, offsetY, virtualWidth, virtualHeight);
         }
 
         public void LoadBitmap(Bitmap bitmap)
@@ -181,6 +183,9 @@ namespace Vispect
 
         private void FitImageToScreen()
         {
+            if (_bitmapImage is null)
+                return;
+
             RecalcZoomRatio();
 
             float NewWidth = _bitmapImage.Width * _curZoom;
@@ -445,6 +450,8 @@ namespace Vispect
             ImageRect.Y -= dy;
         }
 
+        // Virtual <-> Screen 좌표계 변환
+        #region 좌표계 변환
         private PointF GetScreenOffset()
         { 
             return new PointF(ImageRect.X, ImageRect.Y);
@@ -485,6 +492,7 @@ namespace Vispect
                 virtualPos.X * _curZoom + offset.X,
                 virtualPos.Y * _curZoom + offset.Y);
         }
+        #endregion
 
         private void ImageViewCtrl_Resize(object sender, EventArgs e)
         {
@@ -590,9 +598,6 @@ namespace Vispect
             // 마우스 오른쪽 버튼이 눌렸을 때 클릭 위치 저장
             else if (e.Button == MouseButtons.Right)
             {
-                //같은 타입의 ROI추가가 더이상 없다면 초기화하여, ROI가 추가되지 않도록 함
-                _newRoiType = InspWindowType.None;
-
                 // UserControl이 포커스를 받아야 마우스 휠이 정상적으로 동작함
                 Focus();
             }
@@ -789,11 +794,18 @@ namespace Vispect
             // 마우스를 떼면 마지막 오프셋 값을 저장하여 이후 이동을 연속적으로 처리
             if (e.Button == MouseButtons.Right)
             {
-                if (_selEntity != null)
+                if (_newRoiType != InspWindowType.None)
+                {
+                    //같은 타입의 ROI추가가 더이상 없다면 초기화하여, ROI가 추가되지 않도록 함
+                    _newRoiType = InspWindowType.None;
+                }
+                else if (_selEntity != null)
                 {
                     //팝업메뉴 표시
                     _contextMenu.Show(this, e.Location);
                 }
+
+                Cursor = Cursors.Arrow;
             }
         }
 

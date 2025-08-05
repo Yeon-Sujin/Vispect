@@ -116,6 +116,7 @@
             this.cbBinMethod.Name = "cbBinMethod";
             this.cbBinMethod.Size = new System.Drawing.Size(167, 26);
             this.cbBinMethod.TabIndex = 16;
+            this.cbBinMethod.SelectedIndexChanged += new System.EventHandler(this.cbBinMethod_SelectedIndexChanged);
             // 
             // label1
             // 
