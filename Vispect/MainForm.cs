@@ -73,6 +73,8 @@ namespace Vispect
                 {
                     string filePath = openFileDialog.FileName;
                     cameraForm.LoadImage(filePath);
+                    Global.Inst.InspStage.SetImageBuffer(filePath);
+                    Global.Inst.InspStage.CurModel.InspectImagePath = filePath;
 
                     var propForm = GetDockForm<PropertiesForm>();
                     if (propForm != null)

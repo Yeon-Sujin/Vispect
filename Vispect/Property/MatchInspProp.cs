@@ -139,6 +139,5 @@ namespace Vispect.Property
                     break;
             }
         }
-
     }
 }

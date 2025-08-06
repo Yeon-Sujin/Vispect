@@ -18,7 +18,6 @@ namespace Vispect
         public RunForm()
         {
             InitializeComponent();
-
         }
 
         private void btnLive_Click(object sender, EventArgs e)
@@ -27,6 +26,7 @@ namespace Vispect
 
             if (Global.Inst.InspStage.LiveMode)
             {
+                Global.Inst.InspStage.CheckImageBuffer();
                 Global.Inst.InspStage.Grab(0);
             }
         }
@@ -52,6 +52,7 @@ namespace Vispect
 
         private void btnGrab_Click(object sender, EventArgs e)
         {
+            Global.Inst.InspStage.CheckImageBuffer();
             Debug.WriteLine("[RunForm] 수동 Grab 0");
             TryGrab(0);
         }

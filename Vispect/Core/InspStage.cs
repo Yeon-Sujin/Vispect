@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -125,6 +126,73 @@ namespace Vispect.Core
             //_grabManager.SetExposureTime(25000);
         }
 
+        public void SetImageBuffer(string filePath)
+        {
+            Console.Write($"Load Image : {filePath}");
+
+            Mat matImage = Cv2.ImRead(filePath);
+
+            int pixelBpp = 8;
+            int imageWidth;
+            int imageHeight;
+            int imageStride;
+
+            if (matImage.Type() == MatType.CV_8UC3)
+                pixelBpp = 24;
+
+            imageWidth = (matImage.Width + 3) / 4 * 4;
+            imageHeight = matImage.Height;
+
+            // 4바이트 정렬된 새로운 Mat 생성
+            Mat alignedMat = new Mat();
+            Cv2.CopyMakeBorder(matImage, alignedMat, 0, 0, 0, imageWidth - matImage.Width, BorderTypes.Constant, Scalar.Black);
+
+            imageStride = imageWidth * matImage.ElemSize();
+
+            if (_imageSpace != null)
+            {
+                _imageSpace.SetImageInfo(pixelBpp, imageWidth, imageHeight, imageStride);
+            }
+
+            SetBuffer(1);
+
+            int bufferIndex = 0;
+
+            // Mat의 데이터를 byte 배열로 복사
+            int bufSize = (int)(alignedMat.Total() * alignedMat.ElemSize());
+            Marshal.Copy(alignedMat.Data, ImageSpace.GetInspectionBuffer(bufferIndex), 0, bufSize);
+
+            _imageSpace.Split(bufferIndex);
+
+            DisplayGrabImage(bufferIndex);
+
+            if (_previewImage != null)
+            {
+                Bitmap bitmap = ImageSpace.GetBitmap(0);
+                _previewImage.SetImage(BitmapConverter.ToMat(bitmap));
+            }
+        }
+
+        public void CheckImageBuffer()
+        {
+            if (_grabManager != null && SettingXml.Inst.CamType != CameraType.None)
+            {
+                int imageWidth;
+                int imageHeight;
+                int imageStride;
+                _grabManager.GetResolution(out imageWidth, out imageHeight, out imageStride);
+
+                if (_imageSpace.ImageSize.Width != imageWidth || _imageSpace.ImageSize.Height != imageHeight)
+                {
+                    int pixelBpp = 8;
+                    _grabManager.GetPixelBpp(out pixelBpp);
+
+                    _imageSpace.SetImageInfo(pixelBpp, imageWidth, imageHeight, imageStride);
+                    SetBuffer(_imageSpace.BufferCount);
+                }
+            }
+        }
+
         private void UpdateProperty(InspWindow inspWindow)
         {
             if (inspWindow is null)
@@ -198,23 +266,21 @@ namespace Vispect.Core
         }
 
         public void SetBuffer(int bufferCount)
-        { 
-            if (_grabManager == null)
-                return;
-
-            if (_imageSpace.BufferCount == bufferCount)
-                return;
-
+        {
             _imageSpace.InitImageSpace(bufferCount);
-            _grabManager.InitBuffer(bufferCount);
 
-            for (int i = 0; i < bufferCount; i++)
+            if (_grabManager != null)
             {
-                _grabManager.SetBuffer(
-                    _imageSpace.GetInspectionBuffer(i),
-                    _imageSpace.GetInspectionBufferPtr(i),
-                    _imageSpace.GetInspectionBufferHandle(i),
-                    i);
+                _grabManager.InitBuffer(bufferCount);
+
+                for (int i = 0; i < bufferCount; i++)
+                {
+                    _grabManager.SetBuffer(
+                        _imageSpace.GetInspectionBuffer(i),
+                        _imageSpace.GetInspectionBufferPtr(i),
+                        _imageSpace.GetInspectionBufferHandle(i),
+                        i);
+                }
             }
         }
 
@@ -236,6 +302,9 @@ namespace Vispect.Core
 
             foreach (var inspAlgo in inspWindow.AlgorithmList)
             {
+                if (!inspAlgo.IsUse)
+                    continue;
+
                 //검사 영역 초기화
                 inspAlgo.TeachRect = windowArea;
                 inspAlgo.InspRect = windowArea;
@@ -511,14 +580,14 @@ namespace Vispect.Core
             string inspImagePath = _model.InspectImagePath;
             if (File.Exists(inspImagePath))
             {
-                //Global.Inst.InspStage.SetImageBuffer(inspImagePath);
+                Global.Inst.InspStage.SetImageBuffer(inspImagePath);
             }
 
             UpdateDiagramEntity();
 
             return true;
         }
-        // 수진언니 내가 사랑해 걀걀걀 -???
+        // 수진언니 내가 사랑해 걀걀걀 -??? // 주연아 나도♡
         public void SaveModel(string filePath)
         {
             Console.Write($"모델 저장:{filePath}");

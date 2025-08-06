@@ -538,29 +538,6 @@ namespace Vispect
         }
         #endregion
 
-        private void ImageViewCtrl_Resize(object sender, EventArgs e)
-        {
-            ResizeCanvas();
-            Invalidate();
-        }
-
-        private void ImageViewCtrl_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            FitImageToScreen();
-        }
-
-        public void AddRect(List<DrawInspectInfo> rectInfos)
-        {
-            _rectInfos.AddRange(rectInfos);
-            Invalidate();
-        }
-
-        public void ResetEntity()
-        {
-            _rectInfos.Clear();
-            Invalidate();
-        }
-
         private void ImageViewCtrl_MouseDown(object sender, MouseEventArgs e)
         {
             _isCtrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
@@ -626,6 +603,8 @@ namespace Vispect
                         _roiRect = entity.EntityROI;
                         _isMovingRoi = true;
                         _moveStart = e.Location;
+
+                        UpdateInspParam();
                         break;
                     }
 
@@ -721,7 +700,7 @@ namespace Vispect
             //마우스 클릭없이, 위치만 이동시에, 커서의 위치가 크기변경또는 이동 위치일때, 커서 변경
             else
             {
-                if (_selEntity != null)
+                if (_selEntity != null && _newRoiType == InspWindowType.None)
                 {
                     Rectangle screenRoi = VirtualToScreen(_roiRect);
                     Rectangle screenRect = VirtualToScreen(_selEntity.EntityROI);
@@ -736,7 +715,7 @@ namespace Vispect
                     }
                     else
                     {
-                        Cursor = Cursors.Default;
+                        Cursor = Cursors.Arrow;
                     }
                 }
             }
@@ -947,6 +926,29 @@ namespace Vispect
             }
 
             _roiRect = ScreenToVirtual(roi);
+        }
+
+        private void ImageViewCtrl_Resize(object sender, EventArgs e)
+        {
+            ResizeCanvas();
+            Invalidate();
+        }
+
+        private void ImageViewCtrl_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            FitImageToScreen();
+        }
+
+        public void AddRect(List<DrawInspectInfo> rectInfos)
+        {
+            _rectInfos.AddRange(rectInfos);
+            Invalidate();
+        }
+
+        public void ResetEntity()
+        {
+            _rectInfos.Clear();
+            Invalidate();
         }
 
         public bool SetDiagramEntityList(List<DiagramEntity> diagramEntityList)

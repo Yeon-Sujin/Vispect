@@ -99,6 +99,5 @@ namespace Vispect.Teach
             }
             return true;
         }
-
     }
 }

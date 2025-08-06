@@ -116,6 +116,19 @@ namespace Vispect
             }
         }
 
+        // 기존 GetDisplayImage()는 그대로 두고
+        public Bitmap GetDisplayImage()
+        {
+            return imageViewer?.GetCurBitmap();
+        }
+
+        // Mat 전용 메서드 새로 추가
+        public Mat GetDisplayMat()
+        {
+            // 필요하다면 .Clone() 해서 반환하세요
+            return Global.Inst.InspStage.ImageSpace.GetMat();
+        }
+
         private void CameraForm_Resize(object sender, EventArgs e)
         {
             int margin = 0;
@@ -144,21 +157,9 @@ namespace Vispect
             Global.Inst.InspStage.PreView.SetImage(curImage);
         }
 
-        // 기존 GetDisplayImage()는 그대로 두고
-        public Bitmap GetDisplayImage()
-        {
-            return imageViewer?.GetCurBitmap();
-        }
-
-        // Mat 전용 메서드 새로 추가
-        public Mat GetDisplayMat()
-        {
-            // 필요하다면 .Clone() 해서 반환하세요
-            return Global.Inst.InspStage.ImageSpace.GetMat();
-        }
-
         public void UpdateImageViewer()
-        { 
+        {
+            imageViewer.UpdateInspParam();
             imageViewer.Invalidate();
         }
 
