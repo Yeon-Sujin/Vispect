@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using OpenCvSharp;
+using Vispect.Core;
 
 namespace Vispect.Algorithm
 {
@@ -11,11 +13,15 @@ namespace Vispect.Algorithm
     { 
         InspNone = -1,
         InspBinary,
+        InspMatch,
         InspFilter,
         InspAIModule,
         InspCount
     }
 
+    //XmlSerialize는 추상화된 상태를 알수 없어, 상속된 클래스를 명시적으로 포함해야 함.
+    [XmlInclude(typeof(MatchAlgorithm))]
+    [XmlInclude(typeof(BlobAlgorithm))]
     public abstract class InspAlgorithm
     {
         public InspectType InspectType { get; set; } = InspectType.InspNone;
@@ -23,6 +29,8 @@ namespace Vispect.Algorithm
         public bool IsInspected { get; set; } = false;
         public Rect TeachRect { get; set; }
         public Rect InspRect { get; set; }
+
+        public eImageChannel ImageChannel { get; set; } = eImageChannel.Gray;
 
         protected Mat _srcImage = null;
         public List<string> ResultString { get; set; } = new List<string>();

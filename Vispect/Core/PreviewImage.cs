@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Vispect.Property;
 using Vispect.Teach;
 
 namespace Vispect.Core
@@ -45,7 +46,7 @@ namespace Vispect.Core
             if (showBinMode == ShowBinaryMode.ShowBinaryNone)
             {
                 bmpImage = BitmapConverter.ToBitmap(_orignalImage);
-                cameraForm.UpdateDisplay(bmpImage, updatePreview: false);
+                cameraForm.UpdateDisplay(bmpImage);
                 return;
             }
 

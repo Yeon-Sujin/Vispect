@@ -16,12 +16,12 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
 {
-    public enum PropertyType
-    { 
-        Binary,
-        Filter,
-        AIModule
-    }
+    //public enum PropertyType
+    //{ 
+    //    Binary,
+    //    Filter,
+    //    AIModule
+    //}
 
     public partial class PropertiesForm : DockContent
     {
@@ -33,14 +33,16 @@ namespace Vispect
         {
             InitializeComponent();
 
-            LoadOptionControl(PropertyType.Filter);
-            LoadOptionControl(PropertyType.Binary);
-            LoadOptionControl(PropertyType.AIModule);
+            filterProp = new ImageFilterProp();
+            filterProp.Dock = DockStyle.Fill;
+            var filterTab = new TabPage("Filter") { Dock = DockStyle.Fill };
+            filterTab.Controls.Add(filterProp);
+            tabPropControl.TabPages.Add(filterTab);
         }
 
-        private void LoadOptionControl(PropertyType propType)
+        private void LoadOptionControl(InspectType inspType)
         {
-            string tabName = propType.ToString();
+            string tabName = inspType.ToString();
 
             foreach (TabPage tabPage in tabPropControl.TabPages)
             {
@@ -54,7 +56,7 @@ namespace Vispect
                 return;
             }
 
-            UserControl _inspProp = CreateUserControl(propType);
+            UserControl _inspProp = CreateUserControl(inspType);
             if (_inspProp == null)
                 return;
 
@@ -70,27 +72,31 @@ namespace Vispect
             _allTabs[tabName] = newTab;
         }
 
-        private UserControl CreateUserControl(PropertyType propType)
+        private UserControl CreateUserControl(InspectType inspPropType)
         {
             UserControl curProp = null;
-
-            switch (propType)
+            switch (inspPropType)
             {
-                case PropertyType.Binary:
+                case InspectType.InspBinary:
                     BinaryProp blobProp = new BinaryProp();
 
+                    //#7_BINARY_PREVIEW#8 이진화 속성 변경시 발생하는 이벤트 추가
                     blobProp.RangeChanged += RangeSlider_RangeChanged;
-                    blobProp.PropertyChanged += PropertyChanged;
+                    //blobProp.PropertyChanged += PropertyChanged;
                     curProp = blobProp;
                     break;
-                case PropertyType.Filter:
-                    //ImageFilterProp filterProp = new ImageFilterProp();
-                    filterProp = new ImageFilterProp();
+                case InspectType.InspMatch:
+                    MatchInspProp matchProp = new MatchInspProp();
+                    matchProp.PropertyChanged += PropertyChanged;
+                    curProp = matchProp;
+                    break;
+                case InspectType.InspFilter:
+                    ImageFilterProp filterProp = new ImageFilterProp();
                     curProp = filterProp;
                     break;
-                case PropertyType.AIModule:
-                    AIModuleProp AIModuleProp = new AIModuleProp();
-                    curProp = AIModuleProp;
+                case InspectType.InspAIModule:
+                    AIModuleProp aiModuleProp = new AIModuleProp();
+                    curProp = aiModuleProp;
                     break;
                 default:
                     MessageBox.Show("유효하지 않은 옵션입니다.");
@@ -105,6 +111,19 @@ namespace Vispect
             {
                 filterProp.SetOriginalImage(image);
             }
+        }
+
+        public void ShowProperty(InspWindow window)
+        {
+            foreach (InspAlgorithm algo in window.AlgorithmList)
+            {
+                LoadOptionControl(algo.InspectType);
+            }
+        }
+
+        public void ResetProperty()
+        {
+            tabPropControl.TabPages.Clear();
         }
 
         public void UpdateProperty(InspWindow window)
@@ -126,6 +145,16 @@ namespace Vispect
 
                         binaryProp.SetAlgorithm(blobAlgo);
                     }
+                    else if (uc is MatchInspProp matchProp)
+                    {
+                        MatchAlgorithm matchAlgo = (MatchAlgorithm)window.FindInspAlgorithm(InspectType.InspMatch);
+                        if (matchAlgo is null)
+                            continue;
+
+                        window.PatternLearn();
+
+                        matchProp.SetAlgorithm(matchAlgo);
+                    }
                 }
             }
         }
@@ -137,7 +166,7 @@ namespace Vispect
             bool invert = e.Invert;
             ShowBinaryMode showBinMode = e.ShowBinMode;
             Global.Inst.InspStage.PreView?.SetBinary(lowerValue, upperValue, invert, showBinMode);
-            Global.Inst.InspStage.RedrawMainView();
+            //Global.Inst.InspStage.RedrawMainViewf();
         }
 
         private void PropertyChanged(object sender, EventArgs e)

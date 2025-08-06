@@ -27,5 +27,7 @@ namespace Vispect.Core
     public static class Define
     {
         public static readonly string ROI_IMAGE_NAME = "RoiImage.png";
+
+        public static readonly string PROGRAM_NAME = "Vispect";
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vispect.Core;
 using Vispect.Setting;
+using Vispect.Teach;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -42,7 +43,10 @@ namespace Vispect
             cameraWindow.Show(_dockPanel, DockState.Document);
 
             var runWindow = new RunForm();
-            runWindow.Show(cameraWindow.Pane, DockAlignment.Bottom, 0.2);
+            runWindow.Show(cameraWindow.Pane, DockAlignment.Bottom, 0.3);
+
+            var modelTreeWindow = new ModelTreeForm();
+            modelTreeWindow.Show(runWindow.Pane, DockAlignment.Right, 0.3);
 
             var propWindow = new PropertiesForm();
             propWindow.Show(_dockPanel, DockState.DockRight);
@@ -88,6 +92,76 @@ namespace Vispect
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Global.Inst.Dispose();
+        }
+
+        private string GetMdoelTitle(Model curModel)
+        {
+            if (curModel is null)
+                return "";
+
+            string modelName = curModel.ModelName;
+            return $"{Define.PROGRAM_NAME} - MODEL : {modelName}";
+        }
+
+        private void modelNewMenuItem_Click(object sender, EventArgs e)
+        {
+            //신규 모델 추가를 위한 모델 정보를 받기 위한 창 띄우기
+            NewModel newModel = new NewModel();
+            newModel.ShowDialog();
+
+            Model curModel = Global.Inst.InspStage.CurModel;
+            if (curModel != null)
+            {
+                this.Text = GetMdoelTitle(curModel);
+            }
+        }
+
+        private void modelOpenMenuItem_Click(object sender, EventArgs e)
+        {
+            //모델 파일 열기
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "모델 파일 선택";
+                openFileDialog.Filter = "Model Files|*.xml;";
+                openFileDialog.Multiselect = false;
+                openFileDialog.InitialDirectory = SettingXml.Inst.ModelDir;
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    if (Global.Inst.InspStage.LoadModel(filePath))
+                    {
+                        Model curModel = Global.Inst.InspStage.CurModel;
+                        if (curModel != null)
+                        {
+                            this.Text = GetMdoelTitle(curModel);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void modelSaveMenuItem_Click(object sender, EventArgs e)
+        {
+            //모델 파일 저장
+            Global.Inst.InspStage.SaveModel("");
+        }
+
+        private void modelSaveAsMenuItem_Click(object sender, EventArgs e)
+        {
+            //다른이름으로 모델 파일 저장
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.InitialDirectory = SettingXml.Inst.ModelDir;
+                saveFileDialog.Title = "모델 파일 선택";
+                saveFileDialog.Filter = "Model Files|*.xml;";
+                saveFileDialog.DefaultExt = "xml";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    Global.Inst.InspStage.SaveModel(filePath);
+                }
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ using Vispect.Algorithm;
 using Vispect.Core;
 using Vispect.ImagaeProcessing;
 using Vispect.Teach;
+using Vispect.UIControl;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -22,8 +23,6 @@ namespace Vispect
     public partial class CameraForm : DockContent
     {
         public Mat CurrentMat { get; private set; }
-
-        private bool _suppressPreviewUpdate = false;
 
         public CameraForm()
         {
@@ -126,52 +125,36 @@ namespace Vispect
             imageViewer.Location = new System.Drawing.Point(margin, margin);
         }
 
-        public void UpdateDisplay(Bitmap bitmap = null, bool updatePreview = true)
+        public void UpdateDisplay(Bitmap bitmap = null)
         {
-            if (bitmap != null)
+            if (bitmap == null)
             {
+                //#6_INSP_STAGE#3 업데이트시 bitmap이 없다면 InspSpace에서 가져온다
+                bitmap = Global.Inst.InspStage.GetBitmap(0);
+                if (bitmap == null)
+                    return;
+            }
+
+            if (imageViewer != null)
                 imageViewer.LoadBitmap(bitmap);
-                CurrentMat = BitmapConverter.ToMat(bitmap);
-            }
-            else
-            {
-                Bitmap bmp = Global.Inst.InspStage.GetBitmap(0);
-                if (bmp != null)
-                {
-                    imageViewer.LoadBitmap(bmp);
-                    CurrentMat = BitmapConverter.ToMat(bmp);
-                }
-            }
 
-            if (updatePreview == false)
-                return;
-
-            if (!_suppressPreviewUpdate)
-            {
-                Mat curImage = Global.Inst.InspStage.GetMat();
-                Global.Inst.InspStage.PreView.SetImage(curImage);
-            }
+            //#7_BINARY_PREVIEW#10 현재 선택된 이미지로 Previwe이미지 갱신
+            //이진화 프리뷰에서 각 채널별로 설정이 적용되도록, 현재 이미지를 프리뷰 클래스 설정            
+            Mat curImage = Global.Inst.InspStage.GetMat();
+            Global.Inst.InspStage.PreView.SetImage(curImage);
         }
 
+        // 기존 GetDisplayImage()는 그대로 두고
         public Bitmap GetDisplayImage()
         {
-            return imageViewer != null ? imageViewer.GetCurBitmap() : null;
+            return imageViewer?.GetCurBitmap();
         }
 
-        public void UpdateDisplayFromMat(Mat mat)
+        // Mat 전용 메서드 새로 추가
+        public Mat GetDisplayMat()
         {
-            if (mat == null)
-                return;
-
-            // 화면용 비트맵 만들고 띄우기
-            Bitmap bmp = BitmapConverter.ToBitmap(mat);
-            imageViewer.LoadBitmap(bmp);
-
-            // CurrentMat 갱신 (복제)
-            CurrentMat = mat.Clone();
-
-            // Preview도 업데이트
-            Global.Inst.InspStage.PreView.SetImage(CurrentMat);
+            // 필요하다면 .Clone() 해서 반환하세요
+            return Global.Inst.InspStage.ImageSpace.GetMat();
         }
 
         public void UpdateImageViewer()

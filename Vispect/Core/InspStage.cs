@@ -3,6 +3,7 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,6 +60,9 @@ namespace Vispect.Core
         }
 
         public bool LiveMode { get; set; } = false;
+
+        public int SelBufferIndex { get; set; } = 0;
+        public eImageChannel SelImageChannel { get; set; } = eImageChannel.Gray;
 
         public bool Initialize()
         { 
@@ -131,6 +135,66 @@ namespace Vispect.Core
                 return;
 
             propertiesForm.UpdateProperty(inspWindow);
+        }
+
+        public void UpdateTeachingImage(int index)
+        {
+            if (_selectedInspWindow is null)
+                return;
+
+            SetTeachingImage(_selectedInspWindow, index);
+        }
+
+        public void DelTeachingImage(int index)
+        {
+            if (_selectedInspWindow is null)
+                return;
+
+            InspWindow inspWindow = _selectedInspWindow;
+
+            inspWindow.DelWindowImage(index);
+
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo != null)
+            {
+                UpdateProperty(inspWindow);
+            }
+        }
+
+        public void SetTeachingImage(InspWindow inspWindow, int index = -1)
+        {
+            if (inspWindow is null)
+                return;
+
+            CameraForm cameraForm = MainForm.GetDockForm<CameraForm>();
+            if (cameraForm is null)
+                return;
+
+            Mat curImage = cameraForm.GetDisplayMat();
+            if (curImage is null)
+                return;
+
+            if (inspWindow.WindowArea.Right >= curImage.Width ||
+                inspWindow.WindowArea.Bottom >= curImage.Height)
+            {
+                Console.Write("ROI 영역이 잘못되었습니다!");
+                return;
+            }
+
+            Mat windowImage = curImage[inspWindow.WindowArea];
+
+            if (index < 0)
+                inspWindow.AddWindowImage(windowImage);
+            else
+                inspWindow.SetWindowImage(windowImage, index);
+
+            inspWindow.IsPatternLearn = false;
+
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo != null)
+            {
+                UpdateProperty(inspWindow);
+            }
         }
 
         public void SetBuffer(int bufferCount)
@@ -254,6 +318,8 @@ namespace Vispect.Core
 
             inspWindow.WindowArea = rect;
             inspWindow.IsTeach = false;
+
+            SetTeachingImage(inspWindow);
             UpdateProperty(inspWindow);
             UpdateDiagramEntity();
 
@@ -392,9 +458,16 @@ namespace Vispect.Core
             return Global.Inst.InspStage.ImageSpace.GetBitmap();
         }
 
-        public Mat GetMat()
-        { 
-            return Global.Inst.InspStage.ImageSpace.GetMat();
+        public Mat GetMat(int bufferIndex = -1, eImageChannel imageChannel = eImageChannel.None)
+        {
+            if (bufferIndex >= 0)
+                SelBufferIndex = bufferIndex;
+
+            //#BINARY FILTER#14 채널 정보가 유지되도록, eImageChannel.None 타입을 추가
+            if (imageChannel != eImageChannel.None)
+                SelImageChannel = imageChannel;
+
+            return Global.Inst.InspStage.ImageSpace.GetMat(SelBufferIndex, SelImageChannel);
         }
 
         //변경된 모델 정보 갱신하여, ImageViewer와 모델트리에 반영
@@ -420,6 +493,41 @@ namespace Vispect.Core
             {
                 cameraForm.UpdateImageViewer();
             }
+        }
+
+        //#12_MODEL SAVE#4 Mainform에서 호출되는 모델 열기와 저장 함수        
+        public bool LoadModel(string filePath)
+        {
+            Console.Write($"모델 로딩:{filePath}");
+
+            _model = _model.Load(filePath);
+
+            if (_model is null)
+            {
+                Console.Write($"모델 로딩 실패:{filePath}");
+                return false;
+            }
+
+            string inspImagePath = _model.InspectImagePath;
+            if (File.Exists(inspImagePath))
+            {
+                //Global.Inst.InspStage.SetImageBuffer(inspImagePath);
+            }
+
+            UpdateDiagramEntity();
+
+            return true;
+        }
+        // 수진언니 내가 사랑해 걀걀걀 -???
+        public void SaveModel(string filePath)
+        {
+            Console.Write($"모델 저장:{filePath}");
+
+            //입력 경로가 없으면 현재 모델 저장
+            if (string.IsNullOrEmpty(filePath))
+                Global.Inst.InspStage.CurModel.Save();
+            else
+                Global.Inst.InspStage.CurModel.SaveAs(filePath);
         }
 
         #region Disposable

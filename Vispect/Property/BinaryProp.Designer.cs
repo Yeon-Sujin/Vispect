@@ -1,4 +1,4 @@
-﻿namespace Vispect
+﻿namespace Vispect.Property
 {
     partial class BinaryProp
     {

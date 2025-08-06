@@ -15,6 +15,7 @@ namespace Vispect.Core
 {
     public enum eImageChannel : int
     {
+        None = -1,
         Color,
         Gray,
         Red,
@@ -386,7 +387,7 @@ namespace Vispect.Core
             if (_imageInfo.Count <= index)
                 return null;
 
-            if (channel == eImageChannel.Gray)
+            if (channel == eImageChannel.Color)
             {
                 return _imageInfo[index].ToMat();
             }

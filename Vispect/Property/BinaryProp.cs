@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using Vispect.Algorithm;
 using Vispect.Core;
 
-namespace Vispect
+namespace Vispect.Property
 {
     public enum ShowBinaryMode : int
     {

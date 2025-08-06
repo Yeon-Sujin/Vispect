@@ -210,7 +210,6 @@ namespace Vispect
                     var cameraForm = MainForm.GetDockForm<CameraForm>();
                     if (cameraForm != null)
                     {
-                        cameraForm.UpdateDisplayFromMat(processedImage);
                     }
                 }
             }

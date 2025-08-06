@@ -318,6 +318,12 @@ namespace Vispect
                 }
             }
 
+            if (_multiSelectedEntities.Count <= 1 && _selEntity != null)
+            {
+                //#11_MATCHING#8 패턴매칭할 영역 표시
+                DrawInspParam(g, _selEntity.LinkedWindow);
+            }
+
             //선택 영역 박스 그리기
             if (_isBoxSelecting && !_selectionBox.IsEmpty)
             {
@@ -414,6 +420,44 @@ namespace Vispect
 
                 // 본문 텍스트
                 g.DrawString(text, font, textBrush, position);
+            }
+        }
+
+        public void UpdateInspParam()
+        {
+            _extSize.Width = _extSize.Height = 0;
+
+            if (_selEntity is null)
+                return;
+
+            InspWindow window = _selEntity.LinkedWindow;
+            if (window is null)
+                return;
+
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)window.FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo != null)
+            {
+                _extSize.Width = matchAlgo.ExtSize.Width;
+                _extSize.Height = matchAlgo.ExtSize.Height;
+            }
+        }
+
+        private void DrawInspParam(Graphics g, InspWindow window)
+        {
+            if (_extSize.Width > 0 || _extSize.Height > 0)
+            {
+                Rectangle extArea = new Rectangle(_roiRect.Left - _extSize.Width,
+                    _roiRect.Top - _extSize.Height,
+                    _roiRect.Width + _extSize.Width * 2,
+                    _roiRect.Height + _extSize.Height * 2);
+                Rectangle screenRect = VirtualToScreen(extArea);
+
+                using (Pen pen = new Pen(Color.White, 2))
+                {
+                    pen.DashStyle = DashStyle.Dot;
+                    pen.Width = 2;
+                    g.DrawRectangle(pen, screenRect);
+                }
             }
         }
 

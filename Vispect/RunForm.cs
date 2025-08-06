@@ -13,8 +13,6 @@ namespace Vispect
 {
     public partial class RunForm : DockContent
     {
-        private bool _isLive = false;
-        private int _nextBufferIndex = 0;
         private readonly object _grabLock = new object();
 
         public RunForm()
