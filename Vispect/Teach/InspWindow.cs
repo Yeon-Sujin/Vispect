@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using OpenCvSharp;
 using Vispect.Algorithm;
 using Vispect.Core;
+using Vispect.Inspect;
 
 namespace Vispect.Teach
 {
@@ -24,7 +25,9 @@ namespace Vispect.Teach
 
         [XmlElement("InspAlgorithm")]
         public List<InspAlgorithm> AlgorithmList { get; set; } = new List<InspAlgorithm>();
-        
+
+        public List<InspResult> InspResultList { get; set; } = new List<InspResult>();
+
         [XmlIgnore]
         public List<Mat> _windowImages = new List<Mat>();
         public void AddWindowImage(Mat image)
@@ -259,6 +262,21 @@ namespace Vispect.Teach
             }
 
             return true;
+        }
+
+        public void ResetInspResult()
+        {
+            foreach (var algorithm in AlgorithmList)
+            {
+                algorithm.ResetResult();
+            }
+
+            InspResultList.Clear();
+        }
+
+        public void AddInspResult(InspResult inspResult)
+        {
+            InspResultList.Add(inspResult);
         }
     }
 }

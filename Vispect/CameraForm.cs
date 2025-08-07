@@ -16,6 +16,7 @@ using Vispect.Core;
 using Vispect.ImagaeProcessing;
 using Vispect.Teach;
 using Vispect.UIControl;
+using Vispect.Util;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -33,6 +34,7 @@ namespace Vispect
 
         private void ImageViewer_DiagramEntityEvent(object sender, DiagramEntityEventArgs e)
         {
+            SLogger.Write($"ImageViewer Action {e.ActionType.ToString()}");
             switch (e.ActionType)
             {
                 case EntityActionType.Select:
@@ -208,6 +210,11 @@ namespace Vispect
         public void AddRoi(InspWindowType inspWindowType)
         {
             imageViewer.NewRoi(inspWindowType);
+        }
+
+        public void SetInspResultCount(int totalArea, int okCnt, int ngCnt)
+        {
+            imageViewer.SetInspResultCount(new InspectResultCount(totalArea, okCnt, ngCnt));
         }
     }
 }

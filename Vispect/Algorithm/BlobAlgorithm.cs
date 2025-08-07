@@ -348,6 +348,11 @@ namespace Vispect.Algorithm
                 if (IsDefect == false && countFilter.max > 0 && findBlobCount > countFilter.max)
                     IsDefect = true;
             }
+            else
+            {
+                if (_findArea.Count > 0)
+                    IsDefect = true;
+            }
 
             if (IsDefect)
             {

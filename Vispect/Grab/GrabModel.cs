@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Vispect.Util;
 
 namespace Vispect.Grab
 {
@@ -110,6 +111,8 @@ namespace Vispect.Grab
 
         internal bool InitGrab()
         {
+            SLogger.Write("Grab 초기화 시작!");
+
             if (!Create())
                 return false;
 
@@ -119,6 +122,7 @@ namespace Vispect.Grab
                     return false;
             }
 
+            SLogger.Write("Grab 초기화 성공!");
             return true;
         }
 

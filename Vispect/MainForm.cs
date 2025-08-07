@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Vispect.Core;
 using Vispect.Setting;
 using Vispect.Teach;
+using Vispect.Util;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
@@ -37,19 +38,32 @@ namespace Vispect
         }
         private void LoadDockingWindows()
         {
+            //도킹해제 금지 설정
             _dockPanel.AllowEndUserDocking = false;
 
+            //메인폼 설정
             var cameraWindow = new CameraForm();
             cameraWindow.Show(_dockPanel, DockState.Document);
 
-            var runWindow = new RunForm();
-            runWindow.Show(cameraWindow.Pane, DockAlignment.Bottom, 0.3);
+            //#13_INSP_RESULT#7 검사 결과창 30% 비율로 추가
+            var resultWindow = new ResultForm();
+            resultWindow.Show(cameraWindow.Pane, DockAlignment.Bottom, 0.3);
 
+            //# MODEL TREE#3 검사 결과창 우측에 40% 비율로 모델트리 추가
             var modelTreeWindow = new ModelTreeForm();
-            modelTreeWindow.Show(runWindow.Pane, DockAlignment.Right, 0.3);
+            modelTreeWindow.Show(resultWindow.Pane, DockAlignment.Right, 0.4);
 
+            //실행창 추가
+            var runWindow = new RunForm();
+            runWindow.Show(modelTreeWindow.Pane, null);
+
+            //속성창 추가
             var propWindow = new PropertiesForm();
             propWindow.Show(_dockPanel, DockState.DockRight);
+
+            //#14_LOGFORM#2 로그창 추가
+            var logWindow = new LogForm();
+            logWindow.Show(propWindow.Pane, DockAlignment.Bottom, 0.3);
         }
 
         public static T GetDockForm<T>() where T : DockContent
@@ -87,6 +101,7 @@ namespace Vispect
 
         private void mnuSetupopen_Click(object sender, EventArgs e)
         {
+            SLogger.Write($"환경설정창 열기");
             SetupForm setupForm = new SetupForm();
             setupForm.ShowDialog();
         }
