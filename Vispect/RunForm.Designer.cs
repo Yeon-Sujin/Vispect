@@ -31,9 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RunForm));
             this.btnGrab = new System.Windows.Forms.Button();
+            this.runImageList = new System.Windows.Forms.ImageList(this.components);
             this.btnLive = new System.Windows.Forms.Button();
             this.btnInsp = new System.Windows.Forms.Button();
-            this.runImageList = new System.Windows.Forms.ImageList(this.components);
+            this.btnStop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnGrab
@@ -47,6 +48,16 @@
             this.btnGrab.TabIndex = 1;
             this.btnGrab.UseVisualStyleBackColor = true;
             this.btnGrab.Click += new System.EventHandler(this.btnGrab_Click);
+            // 
+            // runImageList
+            // 
+            this.runImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("runImageList.ImageStream")));
+            this.runImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.runImageList.Images.SetKeyName(0, "스크린샷 2025-08-07 134930.png");
+            this.runImageList.Images.SetKeyName(1, "스크린샷 2025-08-07 135012.png");
+            this.runImageList.Images.SetKeyName(2, "스크린샷 2025-08-07 135118.png");
+            this.runImageList.Images.SetKeyName(3, "스크린샷 2025-08-08 132322.png");
+            this.runImageList.Images.SetKeyName(4, "스크린샷 2025-08-08 132515.png");
             // 
             // btnLive
             // 
@@ -72,19 +83,24 @@
             this.btnInsp.UseVisualStyleBackColor = true;
             this.btnInsp.Click += new System.EventHandler(this.btnInsp_Click);
             // 
-            // runImageList
+            // btnStop
             // 
-            this.runImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("runImageList.ImageStream")));
-            this.runImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.runImageList.Images.SetKeyName(0, "스크린샷 2025-08-07 134930.png");
-            this.runImageList.Images.SetKeyName(1, "스크린샷 2025-08-07 135012.png");
-            this.runImageList.Images.SetKeyName(2, "스크린샷 2025-08-07 135118.png");
+            this.btnStop.ImageIndex = 4;
+            this.btnStop.ImageList = this.runImageList;
+            this.btnStop.Location = new System.Drawing.Point(551, 26);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(4);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(150, 100);
+            this.btnStop.TabIndex = 4;
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // RunForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(564, 156);
+            this.ClientSize = new System.Drawing.Size(727, 156);
+            this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnInsp);
             this.Controls.Add(this.btnLive);
             this.Controls.Add(this.btnGrab);
@@ -100,5 +116,6 @@
         private System.Windows.Forms.Button btnLive;
         private System.Windows.Forms.Button btnInsp;
         private System.Windows.Forms.ImageList runImageList;
+        private System.Windows.Forms.Button btnStop;
     }
 }

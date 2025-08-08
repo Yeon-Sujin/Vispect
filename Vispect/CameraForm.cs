@@ -21,15 +21,20 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Vispect
 {
+
     public partial class CameraForm : DockContent
     {
-        public Mat CurrentMat { get; private set; }
+        eImageChannel _currentImageChannel = eImageChannel.Gray;
 
         public CameraForm()
         {
             InitializeComponent();
 
+            this.FormClosed += CameraForm_FormClosed;
+
             imageViewer.DiagramEntityEvent += ImageViewer_DiagramEntityEvent;
+
+            mainViewToolbar.ButtonChanged += Toolbar_ButtonChanged;
         }
 
         private void ImageViewer_DiagramEntityEvent(object sender, DiagramEntityEventArgs e)
@@ -99,23 +104,31 @@ namespace Vispect
         
         public void LoadImage(string filePath)
         {
-            if (!File.Exists(filePath))
+            //    if (!File.Exists(filePath))
+            //        return;
+
+            //    try
+            //    {
+            //        using (Image img = Image.FromFile(filePath))
+            //        {
+            //            Bitmap fixedBmp = FixOrientation(img);
+            //            CurrentMat = BitmapConverter.ToMat(fixedBmp);
+
+            //            imageViewer.LoadBitmap(fixedBmp);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show($"이미지 로드 실패: {ex.Message}");
+            //    }
+
+            if (File.Exists(filePath) == false)
                 return;
 
-            try
-            {
-                using (Image img = Image.FromFile(filePath))
-                {
-                    Bitmap fixedBmp = FixOrientation(img);
-                    CurrentMat = BitmapConverter.ToMat(fixedBmp);
-
-                    imageViewer.LoadBitmap(fixedBmp);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"이미지 로드 실패: {ex.Message}");
-            }
+            //#4_IMAGE_VIEWER#6 이미지 뷰어 컨트롤을 사용하여 이미지를 로드
+            //picMainview.Image = Image.FromFile(filePath);
+            Image bitmap = Image.FromFile(filePath);
+            imageViewer.LoadBitmap((Bitmap)bitmap);
         }
 
         // 기존 GetDisplayImage()는 그대로 두고
@@ -128,13 +141,13 @@ namespace Vispect
         public Mat GetDisplayMat()
         {
             // 필요하다면 .Clone() 해서 반환하세요
-            return Global.Inst.InspStage.ImageSpace.GetMat();
+            return Global.Inst.InspStage.ImageSpace.GetMat(0, _currentImageChannel);
         }
 
         private void CameraForm_Resize(object sender, EventArgs e)
         {
             int margin = 0;
-            imageViewer.Width = this.Width - margin * 2;
+            imageViewer.Width = this.Width - mainViewToolbar.Width - margin * 2;
             imageViewer.Height = this.Height - margin * 2;
 
             imageViewer.Location = new System.Drawing.Point(margin, margin);
@@ -145,18 +158,13 @@ namespace Vispect
             if (bitmap == null)
             {
                 //#6_INSP_STAGE#3 업데이트시 bitmap이 없다면 InspSpace에서 가져온다
-                bitmap = Global.Inst.InspStage.GetBitmap(0);
+                bitmap = Global.Inst.InspStage.GetBitmap(0, _currentImageChannel);
                 if (bitmap == null)
                     return;
             }
 
             if (imageViewer != null)
                 imageViewer.LoadBitmap(bitmap);
-
-            //#7_BINARY_PREVIEW#10 현재 선택된 이미지로 Previwe이미지 갱신
-            //이진화 프리뷰에서 각 채널별로 설정이 적용되도록, 현재 이미지를 프리뷰 클래스 설정            
-            Mat curImage = Global.Inst.InspStage.GetMat();
-            Global.Inst.InspStage.PreView.SetImage(curImage);
         }
 
         public void UpdateImageViewer()
@@ -215,6 +223,76 @@ namespace Vispect
         public void SetInspResultCount(int totalArea, int okCnt, int ngCnt)
         {
             imageViewer.SetInspResultCount(new InspectResultCount(totalArea, okCnt, ngCnt));
+        }
+
+        public void SetWorkingState(WorkingState workingState)
+        {
+            string state = "";
+            switch (workingState)
+            {
+                case WorkingState.INSPECT:
+                    state = "INSPECT";
+                    break;
+
+                case WorkingState.LIVE:
+                    state = "LIVE";
+                    break;
+
+                case WorkingState.ALARM:
+                    state = "ALARM";
+                    break;
+            }
+
+            imageViewer.WorkingState = state;
+            imageViewer.Invalidate();
+        }
+
+        private void Toolbar_ButtonChanged(object sender, ToolbarEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case ToolbarButton.ShowROI:
+                    if (e.IsChecked)
+                        UpdateDiagramEntity();
+                    else
+                        imageViewer.ResetEntity();
+                    break;
+                case ToolbarButton.ChannelColor:
+                    _currentImageChannel = eImageChannel.Color;
+                    UpdateDisplay();
+                    break;
+                case ToolbarButton.ChannelGray:
+                    _currentImageChannel = eImageChannel.Gray;
+                    UpdateDisplay();
+                    break;
+                case ToolbarButton.ChannelRed:
+                    _currentImageChannel = eImageChannel.Red;
+                    UpdateDisplay();
+                    break;
+                case ToolbarButton.ChannelGreen:
+                    _currentImageChannel = eImageChannel.Green;
+                    UpdateDisplay();
+                    break;
+                case ToolbarButton.ChannelBlue:
+                    _currentImageChannel = eImageChannel.Blue;
+                    UpdateDisplay();
+                    break;
+            }
+        }
+
+        public void SetImageChannel(eImageChannel channel)
+        {
+            mainViewToolbar.SetSelectButton(channel);
+            UpdateDisplay();
+        }
+
+        private void CameraForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            mainViewToolbar.ButtonChanged -= Toolbar_ButtonChanged;
+
+            imageViewer.DiagramEntityEvent -= ImageViewer_DiagramEntityEvent;
+
+            this.FormClosed -= CameraForm_FormClosed;
         }
     }
 }

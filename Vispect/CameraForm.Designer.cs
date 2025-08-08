@@ -28,22 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.mainViewToolbar = new Vispect.UIControl.MainViewToolbar();
             this.imageViewer = new Vispect.ImageViewCtrl();
             this.SuspendLayout();
             // 
+            // mainViewToolbar
+            // 
+            this.mainViewToolbar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.mainViewToolbar.Location = new System.Drawing.Point(704, 0);
+            this.mainViewToolbar.Name = "mainViewToolbar";
+            this.mainViewToolbar.Size = new System.Drawing.Size(96, 649);
+            this.mainViewToolbar.TabIndex = 2;
+            // 
             // imageViewer
             // 
-            this.imageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageViewer.Dock = System.Windows.Forms.DockStyle.Left;
             this.imageViewer.Location = new System.Drawing.Point(0, 0);
             this.imageViewer.Name = "imageViewer";
-            this.imageViewer.Size = new System.Drawing.Size(800, 450);
+            this.imageViewer.Size = new System.Drawing.Size(800, 649);
             this.imageViewer.TabIndex = 0;
+            this.imageViewer.WorkingState = "";
             // 
             // CameraForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 649);
+            this.Controls.Add(this.mainViewToolbar);
             this.Controls.Add(this.imageViewer);
             this.Name = "CameraForm";
             this.Text = "CameeraForm";
@@ -55,5 +66,6 @@
         #endregion
 
         private ImageViewCtrl imageViewer;
+        private UIControl.MainViewToolbar mainViewToolbar;
     }
 }

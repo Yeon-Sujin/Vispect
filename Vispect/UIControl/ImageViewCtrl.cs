@@ -63,6 +63,8 @@ namespace Vispect
 
         private List<DrawInspectInfo> _rectInfos = new List<DrawInspectInfo>();
 
+        public string WorkingState { get; set; } = "";
+
         private InspectResultCount _inspectResultCount = new InspectResultCount();
 
         private Point _roiStart = Point.Empty;
@@ -98,6 +100,8 @@ namespace Vispect
 
         //팝업 메뉴
         private ContextMenuStrip _contextMenu;
+
+        private readonly object _lock = new object();
 
         public ImageViewCtrl()
         {
@@ -173,6 +177,12 @@ namespace Vispect
 
         public void LoadBitmap(Bitmap bitmap)
         {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action<Bitmap>(LoadBitmap), bitmap);
+                return;
+            }
+
             if (_bitmapImage != null)
             {
                 if (_bitmapImage.Width == bitmap.Width && _bitmapImage.Height == bitmap.Height)
@@ -351,67 +361,18 @@ namespace Vispect
                 }
             }
 
-            // 이미지 좌표 → 화면 좌표 변환 후 사각형 그리기
-            if (_rectInfos != null)
+            lock (_lock)
             {
-                foreach (DrawInspectInfo rectInfo in _rectInfos)
-                {
-                    Color lineColor = Color.LightCoral;
-                    if (rectInfo.decision == DecisionType.Defect)
-                        lineColor = Color.Red;
-                    else if (rectInfo.decision == DecisionType.Good)
-                        lineColor = Color.LightGreen;
+                DrawRectInfo(g);
+            }
 
-                    Rectangle rect = new Rectangle(rectInfo.rect.X, rectInfo.rect.Y, rectInfo.rect.Width, rectInfo.rect.Height);
-                    Rectangle screenRect = VirtualToScreen(rect);
-
-                    using (Pen pen = new Pen(lineColor, 2))
-                    {
-                        if (rectInfo.UseRotatedRect)
-                        {
-                            PointF[] screenPoints = rectInfo.rotatedPoints
-                                                    .Select(p => VirtualToScreen(new PointF(p.X, p.Y))) // 화면 좌표계로 변환
-                                                    .ToArray();
-
-                            if (screenPoints.Length == 4)
-                            {
-                                for (int i = 0; i < 4; i++)
-                                {
-                                    g.DrawLine(pen, screenPoints[i], screenPoints[(i + 1) % 4]); // 시계방향으로 선 연결
-                                }
-                            }
-                        }
-                        else
-                        {
-                            g.DrawRectangle(pen, screenRect);
-                        }
-                    }
-
-                    if (rectInfo.info != "")
-                    {
-                        float baseFontSize = 20.0f;
-
-                        if (rectInfo.decision == DecisionType.Info)
-                        {
-                            baseFontSize = 3.0f;
-                            lineColor = Color.LightBlue;
-                        }
-
-                        float fontSize = baseFontSize * _curZoom;
-
-                        // 스코어 문자열 그리기 (우상단)
-                        string infoText = rectInfo.info;
-                        PointF textPos = new PointF(screenRect.Left, screenRect.Top); // 위로 약간 띄우기
-
-                        if (rectInfo.inspectType == InspectType.InspBinary
-                            && rectInfo.decision != DecisionType.Info)
-                        {
-                            textPos.Y = screenRect.Bottom - fontSize;
-                        }
-
-                        DrawText(g, infoText, textPos, fontSize, lineColor);
-                    }
-                }
+            //#17_WORKING_STATE#4 작업 상태 화면에 표시
+            if (WorkingState != "")
+            {
+                float fontSize = 20.0f;
+                Color stateColor = Color.FromArgb(255, 128, 0);
+                PointF textPos = new PointF(10, 10);
+                DrawText(g, WorkingState, textPos, fontSize, stateColor);
             }
 
             if (_inspectResultCount.Total > 0)
@@ -422,6 +383,72 @@ namespace Vispect
                 Color resultColor = Color.FromArgb(255, 255, 255);
                 PointF textPos = new PointF(Width - 80, 10);
                 DrawText(g, resultText, textPos, fontSize, resultColor);
+            }
+        }
+
+        private void DrawRectInfo(Graphics g)
+        {
+            if (_rectInfos == null || _rectInfos.Count <= 0)
+                return;
+
+            // 이미지 좌표 → 화면 좌표 변환 후 사각형 그리기
+            foreach (DrawInspectInfo rectInfo in _rectInfos)
+            {
+                Color lineColor = Color.LightCoral;
+                if (rectInfo.decision == DecisionType.Defect)
+                    lineColor = Color.Red;
+                else if (rectInfo.decision == DecisionType.Good)
+                    lineColor = Color.LightGreen;
+
+                Rectangle rect = new Rectangle(rectInfo.rect.X, rectInfo.rect.Y, rectInfo.rect.Width, rectInfo.rect.Height);
+                Rectangle screenRect = VirtualToScreen(rect);
+
+                using (Pen pen = new Pen(lineColor, 2))
+                {
+                    if (rectInfo.UseRotatedRect)
+                    {
+                        PointF[] screenPoints = rectInfo.rotatedPoints
+                                                .Select(p => VirtualToScreen(new PointF(p.X, p.Y))) // 화면 좌표계로 변환
+                                                .ToArray();
+
+                        if (screenPoints.Length == 4)
+                        {
+                            for (int i = 0; i < 4; i++)
+                            {
+                                g.DrawLine(pen, screenPoints[i], screenPoints[(i + 1) % 4]); // 시계방향으로 선 연결
+                            }
+                        }
+                    }
+                    else
+                    {
+                        g.DrawRectangle(pen, screenRect);
+                    }
+                }
+
+                if (rectInfo.info != "")
+                {
+                    float baseFontSize = 20.0f;
+
+                    if (rectInfo.decision == DecisionType.Info)
+                    {
+                        baseFontSize = 3.0f;
+                        lineColor = Color.LightBlue;
+                    }
+
+                    float fontSize = baseFontSize * _curZoom;
+
+                    // 스코어 문자열 그리기 (우상단)
+                    string infoText = rectInfo.info;
+                    PointF textPos = new PointF(screenRect.Left, screenRect.Top); // 위로 약간 띄우기
+
+                    if (rectInfo.inspectType == InspectType.InspBinary
+                        && rectInfo.decision != DecisionType.Info)
+                    {
+                        textPos.Y = screenRect.Bottom - fontSize;
+                    }
+
+                    DrawText(g, infoText, textPos, fontSize, lineColor);
+                }
             }
         }
 
@@ -967,8 +994,11 @@ namespace Vispect
 
         public void AddRect(List<DrawInspectInfo> rectInfos)
         {
-            _rectInfos.AddRange(rectInfos);
-            Invalidate();
+            lock (_lock)
+            {
+                _rectInfos.AddRange(rectInfos);
+                Invalidate();
+            }
         }
 
         public void SetInspResultCount(InspectResultCount inspectResultCount)
@@ -1057,7 +1087,10 @@ namespace Vispect
 
         public void ResetEntity()
         {
-            _rectInfos.Clear();
+            lock (_lock)
+            {
+                _rectInfos.Clear();
+            }
             Invalidate();
         }
 

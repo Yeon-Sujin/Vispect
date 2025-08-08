@@ -35,6 +35,8 @@ namespace Vispect
             LoadDockingWindows();
 
             Global.Inst.Initialize();
+
+            LoadSetting();
         }
         private void LoadDockingWindows()
         {
@@ -66,6 +68,11 @@ namespace Vispect
             logWindow.Show(propWindow.Pane, DockAlignment.Bottom, 0.3);
         }
 
+        private void LoadSetting()
+        {
+            cycleModeMenuItem.Checked = SettingXml.Inst.CycleMode;
+        }
+
         public static T GetDockForm<T>() where T : DockContent
         {
             var findForm = _dockPanel.Contents.OfType<T>().FirstOrDefault();
@@ -81,20 +88,14 @@ namespace Vispect
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "이미지 파일 선택";
-                openFileDialog.Filter = "Image Files | *.bmp; *.jpg; *.jpeg; *.png; *.gif";
+                openFileDialog.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif";
                 openFileDialog.Multiselect = false;
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    //#13_SET_IMAGE_BUFFER#2 이미지에 맞게 버퍼를 먼저 설정하도록 변경
                     string filePath = openFileDialog.FileName;
-                    cameraForm.LoadImage(filePath);
                     Global.Inst.InspStage.SetImageBuffer(filePath);
                     Global.Inst.InspStage.CurModel.InspectImagePath = filePath;
-
-                    var propForm = GetDockForm<PropertiesForm>();
-                    if (propForm != null)
-                    {
-                        propForm.SetImage(cameraForm.CurrentMat);
-                    }
                 }
             }
         }
@@ -179,6 +180,13 @@ namespace Vispect
                     Global.Inst.InspStage.SaveModel(filePath);
                 }
             }
+        }
+
+        private void cycleModeMenuItem_Click(object sender, EventArgs e)
+        {
+            // 현재 체크 상태 확인
+            bool isChecked = cycleModeMenuItem.Checked;
+            SettingXml.Inst.CycleMode = isChecked;
         }
     }
 }

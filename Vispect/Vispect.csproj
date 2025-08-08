@@ -115,7 +115,9 @@
     <Compile Include="Grab\GrabModel.cs" />
     <Compile Include="Grab\HikRobotCam.cs" />
     <Compile Include="Grab\WebCam.cs" />
+    <Compile Include="Inspect\InspBoard.cs" />
     <Compile Include="Inspect\InspResult.cs" />
+    <Compile Include="Inspect\InspWorker.cs" />
     <Compile Include="Inspect\SaigeAI.cs" />
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
@@ -221,6 +223,12 @@
     <Compile Include="Property\ImageFilterProp.Designer.cs">
       <DependentUpon>ImageFilterProp.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIControl\MainViewToolbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIControl\MainViewToolbar.Designer.cs">
+      <DependentUpon>MainViewToolbar.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIControl\PatternImageEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -234,6 +242,8 @@
       <DependentUpon>RangeTrackbar.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\BitmapExtension.cs" />
+    <Compile Include="Util\ImageFileSorter.cs" />
+    <Compile Include="Util\ImageLoader.cs" />
     <Compile Include="Util\SLogger.cs" />
     <Compile Include="Util\XmlHelper.cs" />
     <EmbeddedResource Include="CameraForm.resx">
@@ -289,6 +299,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Property\ImageFilterProp.resx">
       <DependentUpon>ImageFilterProp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIControl\MainViewToolbar.resx">
+      <DependentUpon>MainViewToolbar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UIControl\PatternImageEditor.resx">
       <DependentUpon>PatternImageEditor.cs</DependentUpon>

@@ -9,16 +9,6 @@ using Vispect.Core;
 
 namespace Vispect.Algorithm
 {
-    public enum InspectType
-    { 
-        InspNone = -1,
-        InspBinary,
-        InspMatch,
-        InspFilter,
-        InspAIModule,
-        InspCount
-    }
-
     //XmlSerialize는 추상화된 상태를 알수 없어, 상속된 클래스를 명시적으로 포함해야 함.
     [XmlInclude(typeof(MatchAlgorithm))]
     [XmlInclude(typeof(BlobAlgorithm))]

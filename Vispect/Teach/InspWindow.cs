@@ -93,6 +93,8 @@ namespace Vispect.Teach
         }
 
         public bool PatternLearn()
+
+
         {
             if (IsPatternLearn == true)
                 return true;

@@ -346,7 +346,7 @@ namespace Vispect.Algorithm
 
             foreach (var point in OutPoints)
             {
-                SLogger.Write($"매칭된 위치: {OutPoints}");
+                //SLogger.Write($"매칭된 위치: {OutPoints}");
                 resultArea.Add(new DrawInspectInfo(new Rect(point.X, point.Y, _templateImages[0].Width, _templateImages[0].Height),
                     info, InspectType.InspMatch, decisionType));
             }
