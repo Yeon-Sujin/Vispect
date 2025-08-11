@@ -83,6 +83,11 @@ namespace Vispect.Teach
             cloneWindow.WindowArea = this.WindowArea + offset;
             cloneWindow.IsTeach = false;
 
+            cloneWindow.IsPatternLearn = false;
+
+            foreach (var img in _windowImages.ToList())
+                cloneWindow._windowImages.Add(img?.Clone());
+
             foreach (InspAlgorithm algo in AlgorithmList)
             {
                 var cloneAlgo = algo.Clone();
@@ -93,8 +98,6 @@ namespace Vispect.Teach
         }
 
         public bool PatternLearn()
-
-
         {
             if (IsPatternLearn == true)
                 return true;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Vispect.Core;
 using Vispect.Util;
+using Vispect.Util.Helpers;
 
 namespace Vispect.Teach
 {

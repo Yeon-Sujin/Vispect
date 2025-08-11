@@ -3,6 +3,7 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Windows.Forms;
 using Vispect.Algorithm;
 using Vispect.Grab;
 using Vispect.Inspect;
+using Vispect.Sequence;
 using Vispect.Setting;
 using Vispect.Teach;
 using Vispect.Util;
@@ -119,6 +121,10 @@ namespace Vispect.Core
 
                 InitModelGrab(MAX_GRAB_BUF);
             }
+
+            //#19_VISION_SEQUENCE#3 VisionSequence 초기화
+            VisionSequence.Inst.InitSequence();
+            VisionSequence.Inst.SeqCommand += SeqCommand;
 
             if (!LastestModelOpen())
             {
@@ -689,6 +695,9 @@ namespace Vispect.Core
             if (_inspWorker != null)
                 _inspWorker.Stop();
 
+            //#19_VISION_SEQUENCE#4 시퀀스 정지
+            VisionSequence.Inst.StopAutoRun();
+
             SetWorkingState(WorkingState.NONE);
         }
 
@@ -708,6 +717,63 @@ namespace Vispect.Core
             DisplayGrabImage(0);
 
             return true;
+        }
+
+        //#19_VISION_SEQUENCE#7 시퀀스 명령 처리
+        private void SeqCommand(object sender, SeqCmd seqCmd, object Param)
+        {
+            switch (seqCmd)
+            {
+                case SeqCmd.InspStart:
+                    {
+                        //#WCF_FSM#5 카메라 촬상 후, 검사 진행
+                        SLogger.Write("MMI : InspStart", SLogger.LogType.Info);
+
+                        //검사 시작
+                        string errMsg;
+
+                        if (UseCamera)
+                        {
+                            if (!Grab(0))
+                            {
+                                errMsg = string.Format("Failed to grab");
+                                SLogger.Write(errMsg, SLogger.LogType.Error);
+                            }
+                        }
+                        else
+                        {
+                            if (!VirtualGrab())
+                            {
+                                errMsg = string.Format("Failed to virtual grab");
+                                SLogger.Write(errMsg, SLogger.LogType.Error);
+                            }
+                        }
+
+                        bool isDefect = false;
+                        if (!_inspWorker.RunInspect(out isDefect))
+                        {
+                            errMsg = string.Format("Failed to inspect");
+                            SLogger.Write(errMsg, SLogger.LogType.Error);
+                        }
+
+                        //#WCF_FSM#6 비젼 -> 제어에 검사 완료 및 결과 전송
+                        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspDone, isDefect);
+                    }
+                    break;
+                case SeqCmd.InspEnd:
+                    {
+                        SLogger.Write("MMI : InspEnd", SLogger.LogType.Info);
+
+                        //모든 검사 종료
+                        string errMsg = "";
+
+                        //검사 완료에 대한 처리
+                        SLogger.Write("검사 종료");
+
+                        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspEnd, errMsg);
+                    }
+                    break;
+            }
         }
 
         public bool InspectReady(string lotNumber, string serialID)
@@ -742,6 +808,9 @@ namespace Vispect.Core
 
             SetWorkingState(WorkingState.INSPECT);
 
+            //#19_VISION_SEQUENCE#5 자동검사 시작
+            string modelName = Path.GetFileNameWithoutExtension(modelPath);
+            VisionSequence.Inst.StartAutoRun(modelName);
             return true;
         }
 
@@ -766,6 +835,9 @@ namespace Vispect.Core
                 if (disposing)
                 {
                     // Dispose managed resources.
+
+                    //#19_VISION_SEQUENCE#6 시퀀스 이벤트 해제
+                    VisionSequence.Inst.SeqCommand -= SeqCommand;
                     if (_saigeAI != null)
                     {
                         _saigeAI.Dispose();

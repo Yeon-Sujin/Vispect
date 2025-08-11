@@ -9,7 +9,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Xml;
 
-namespace Vispect.Util
+namespace Vispect.Util.Helpers
 {
     /*
       * XmlHelper 클래스에서 XML을 저장하는 방법은 **객체 직렬화(Serialization)**를 이용하여 객체를 XML로 변환한 후 파일로 저장하는 방식입니다.

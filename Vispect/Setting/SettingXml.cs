@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vispect.Grab;
+using Vispect.Sequence;
 using Vispect.Util;
+using Vispect.Util.Helpers;
 
 namespace Vispect.Setting
 {
@@ -90,5 +92,8 @@ namespace Vispect.Setting
         public CameraType CamType { get; set; } = CameraType.WebCam;
 
         public bool CycleMode { get; set; } = false;
+
+        public CommunicatorType CommType { get; set; }
+        public string CommIP { get; set; } = "127.0.0.1";
     }
 }
