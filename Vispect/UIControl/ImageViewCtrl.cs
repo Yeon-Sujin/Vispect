@@ -139,6 +139,9 @@ namespace Vispect
                 case InspWindowType.Body:
                     color = Color.Yellow;
                     break;
+                case InspWindowType.ID:
+                    color = Color.Magenta;
+                    break;
             }
 
             return color;

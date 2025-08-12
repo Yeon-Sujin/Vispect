@@ -191,10 +191,12 @@ namespace Vispect.Core
 
             if (_imageSpace != null)
             {
-                _imageSpace.SetImageInfo(pixelBpp, imageWidth, imageHeight, imageStride);
+                if (_imageSpace.ImageSize.Width != imageWidth || _imageSpace.ImageSize.Height != imageHeight)
+                {
+                    _imageSpace.SetImageInfo(pixelBpp, imageWidth, imageHeight, imageStride);
+                    SetBuffer(_imageSpace.BufferCount);
+                }
             }
-
-            SetBuffer(1);
 
             int bufferIndex = 0;
 
@@ -205,12 +207,6 @@ namespace Vispect.Core
             _imageSpace.Split(bufferIndex);
 
             DisplayGrabImage(bufferIndex);
-
-            if (_previewImage != null)
-            {
-                Bitmap bitmap = ImageSpace.GetBitmap(0);
-                _previewImage.SetImage(BitmapConverter.ToMat(bitmap));
-            }
         }
 
         public void CheckImageBuffer()
