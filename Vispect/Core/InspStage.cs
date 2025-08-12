@@ -28,7 +28,7 @@ namespace Vispect.Core
         private ImageSpace _imageSpace = null;
 
         private GrabModel _grabManager = null;
-        private CameraType _camType = CameraType.WebCam;
+        private CameraType _camType = CameraType.None;
 
         SaigeAI _saigeAI;
 

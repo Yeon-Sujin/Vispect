@@ -999,6 +999,7 @@ namespace Vispect.UIControl
         {
             lock (_lock)
             {
+                //_rectInfos = rectInfos;
                 _rectInfos.AddRange(rectInfos);
                 Invalidate();
             }
