@@ -101,7 +101,7 @@ namespace Vispect.Core
                 highlightColor = new Scalar(0, 0, 255);
             else if (showBinMode == ShowBinaryMode.ShowBinaryHighlightGreen)
                 highlightColor = new Scalar(0, 255, 0);
-            else
+            else //(showBinMode == ShowBinaryMode.ShowBinaryHighlightBlue)
                 highlightColor = new Scalar(255, 0, 0);
 
             Mat overlayImage;

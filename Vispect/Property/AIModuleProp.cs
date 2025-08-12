@@ -16,60 +16,56 @@ namespace Vispect.Property
 {
     public partial class AIModuleProp : UserControl
     {
-        private SaigeAI _saigeAI;
-        private string _modelPath = string.Empty;
-        private EngineType _engineType = EngineType.IAD;
-
-        private enum EngineType { IAD, SEG, DET }
+        SaigeAI _saigeAI; // SaigeAI 인스턴스
+        string _modelPath = string.Empty;
+        AIEngineType _engineType;
 
         public AIModuleProp()
         {
             InitializeComponent();
 
-            // ComboBox에 EngineType 문자열을 바인딩
-            cbEngineSelect.DataSource =
-                Enum.GetNames(typeof(EngineType))
-                    .ToList();
-
-            // 기본 선택값 지정(원한다면)
-            cbEngineSelect.SelectedItem = EngineType.IAD.ToString();
+            cbEngineSelect.DataSource = Enum.GetValues(typeof(AIEngineType)).Cast<AIEngineType>().ToList();
+            cbEngineSelect.SelectedIndex = 0;
         }
 
         private void cbEngineSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 1) SelectedItem 이 null 이거나 문자열이 아니면 무시
-            if (!(cbEngineSelect.SelectedItem is string selected)
-                || string.IsNullOrWhiteSpace(selected))
+            AIEngineType engineType = (AIEngineType)cbEngineSelect.SelectedItem;
+
+            if (engineType != _engineType)
             {
-                return;
+                if (_saigeAI != null)
+                    _saigeAI.Dispose();
             }
 
-            // 2) Enum.TryParse 로 안전하게 변환 시도
-            if (Enum.TryParse<EngineType>(selected, ignoreCase: true, out var engine))
-            {
-                _engineType = engine;
-            }
-            else
-            {
-                // 3) 파싱 실패 시 안내
-                MessageBox.Show(
-                    $"알 수 없는 엔진 타입입니다: '{selected}'",
-                    "경고",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-            }
+            _engineType = engineType;
         }
 
         private void btnSelAIModel_Click(object sender, EventArgs e)
         {
+            string filter = "AI Files|*.*;";
+
+            switch (_engineType)
+            {
+                case AIEngineType.AnomalyDetection:
+                    filter = "Anomaly Detection Files|*.saigeiad;";
+                    break;
+                case AIEngineType.Segmentation:
+                    filter = "Segmentation Files|*.saigeseg;";
+                    break;
+                case AIEngineType.Detection:
+                    filter = "Detection Files|*.saigedet;";
+                    break;
+            }
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "AI 모델 파일 선택";
-                openFileDialog.Filter = "AI Files|*.*;";
+                openFileDialog.Filter = filter;
                 openFileDialog.Multiselect = false;
+                openFileDialog.InitialDirectory = @"C:\Saige\SaigeVision\engine\Examples\data\sfaw2023\models";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
-                { 
+                {
                     _modelPath = openFileDialog.FileName;
                     txtAIModelPath.Text = _modelPath;
                 }
@@ -89,50 +85,30 @@ namespace Vispect.Property
                 _saigeAI = Global.Inst.InspStage.AIModule;
             }
 
-            _saigeAI.SelectedEngineType = (SaigeAI.EngineType)_engineType;
-            _saigeAI.LoadEngine(_modelPath);
+            _saigeAI.LoadEngine(_modelPath, _engineType);
             MessageBox.Show("모델이 성공적으로 로드되었습니다.", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
         private void btnInspAI_Click(object sender, EventArgs e)
         {
-            Bitmap bitmap = Global.Inst.InspStage.GetCurrentImage();
-
             if (_saigeAI == null)
             {
                 MessageBox.Show("AI 모듈이 초기화되지 않았습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            Bitmap result = null;
-
-            switch (_engineType)
+            Bitmap bitmap = Global.Inst.InspStage.GetBitmap();
+            if (bitmap is null)
             {
-                case EngineType.IAD:
-                    if (_saigeAI.InspIAD(bitmap))
-                        result = _saigeAI.GetResultImage();
-                    break;
-
-                case EngineType.SEG:
-                    if (_saigeAI.InspSEG(bitmap))
-                        result = _saigeAI.GetResultImage();
-                    break;
-
-                case EngineType.DET:
-                    if (_saigeAI.InspDET(bitmap))
-                        result = _saigeAI.GetResultImage();
-                    break;
-
-                default:
-                    MessageBox.Show("지원되지 않는 AI 엔진 타입입니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                MessageBox.Show("현재 이미지가 없습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            if (result != null)
-                Global.Inst.InspStage.UpdateDisplay(result);
-            else
-                MessageBox.Show("검사 결과가 없습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _saigeAI.InspAIModule(bitmap);
+
+            Bitmap resultImage = _saigeAI.GetResultImage();
+
+            Global.Inst.InspStage.UpdateDisplay(resultImage);
         }
     }
 }

@@ -107,14 +107,6 @@ namespace Vispect
             return curProp;
         }
 
-        public void SetImage(Mat image)
-        {
-            if (filterProp != null)
-            {
-                filterProp.SetOriginalImage(image);
-            }
-        }
-
         public void ShowProperty(InspWindow window)
         {
             foreach (InspAlgorithm algo in window.AlgorithmList)
@@ -169,11 +161,6 @@ namespace Vispect
             ShowBinaryMode showBinMode = e.ShowBinMode;
             Global.Inst.InspStage.PreView?.SetBinary(lowerValue, upperValue, invert, showBinMode);
             //Global.Inst.InspStage.RedrawMainViewf();
-        }
-
-        private void PropertyChanged(object sender, EventArgs e)
-        {
-            Global.Inst.InspStage.RedrawMainView();
         }
 
         private void ImageChannelChanged(object sender, ImageChannelEventArgs e)

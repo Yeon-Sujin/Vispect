@@ -24,7 +24,7 @@ namespace Vispect.Algorithm
 
         public bool InvertResult { get; set; } = false; // 결과 반전 여부
 
-        //매칭이 설공했을때, 결과 매칭율
+        //매칭이 성공했을때, 결과 매칭율
         public int OutScore { get; set; } = 0;
         //찾은 위치
         public Point OutPoint { get; set; } = new Point(0, 0);

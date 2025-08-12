@@ -10,8 +10,6 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
-using Vispect.Setting;
-using Vispect.Util;
 
 namespace Vispect.Sequence
 {

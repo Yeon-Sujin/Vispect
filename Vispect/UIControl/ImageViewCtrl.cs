@@ -12,7 +12,7 @@ using Vispect.Algorithm;
 using Vispect.Core;
 using Vispect.Teach;
 
-namespace Vispect
+namespace Vispect.UIControl
 {
     public enum EntityActionType
     {
@@ -603,7 +603,7 @@ namespace Vispect
             {
                 if (_newRoiType != InspWindowType.None)
                 {
-                    //새로운 ROI 그리기 시작 위치 설저어
+                    //새로운 ROI 그리기 시작 위치 설정
                     _roiStart = e.Location;
                     _isSelectingRoi = true;
                     _selEntity = null;
@@ -1092,7 +1092,9 @@ namespace Vispect
         {
             lock (_lock)
             {
+                _diagramEntityList.Clear();
                 _rectInfos.Clear();
+                _selEntity = null;
             }
             Invalidate();
         }

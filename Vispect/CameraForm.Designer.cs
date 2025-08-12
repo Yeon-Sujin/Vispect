@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.mainViewToolbar = new Vispect.UIControl.MainViewToolbar();
-            this.imageViewer = new Vispect.ImageViewCtrl();
+            this.imageViewer = new Vispect.UIControl.ImageViewCtrl();
             this.SuspendLayout();
             // 
             // mainViewToolbar
@@ -65,7 +65,7 @@
 
         #endregion
 
-        private ImageViewCtrl imageViewer;
+        private UIControl.ImageViewCtrl imageViewer;
         private UIControl.MainViewToolbar mainViewToolbar;
     }
 }

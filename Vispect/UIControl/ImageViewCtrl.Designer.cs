@@ -1,4 +1,4 @@
-﻿namespace Vispect
+﻿namespace Vispect.UIControl
 {
     partial class ImageViewCtrl
     {

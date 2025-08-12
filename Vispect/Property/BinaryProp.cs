@@ -148,6 +148,8 @@ namespace Vispect.Property
 
             cbBinMethod.SelectedIndex = (int)_blobAlgo.BinMethod;
 
+            cbChannel.SelectedIndex = (int)_blobAlgo.ImageChannel - 1;
+
             UpdateDataGridView(true);
             chkRotatedRect.Checked = _blobAlgo.UseRotatedRect;
         }

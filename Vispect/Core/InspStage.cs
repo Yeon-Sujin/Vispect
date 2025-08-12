@@ -542,11 +542,7 @@ namespace Vispect.Core
             if (bufferIndex >= 0)
                 SelBufferIndex = bufferIndex;
 
-            //#BINARY FILTER#14 채널 정보가 유지되도록, eImageChannel.None 타입을 추가
-            if (imageChannel != eImageChannel.None)
-                SelImageChannel = imageChannel;
-
-            return Global.Inst.InspStage.ImageSpace.GetMat(SelBufferIndex, SelImageChannel);
+            return Global.Inst.InspStage.ImageSpace.GetMat(SelBufferIndex, imageChannel);
         }
 
         //변경된 모델 정보 갱신하여, ImageViewer와 모델트리에 반영
